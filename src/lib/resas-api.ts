@@ -1,6 +1,8 @@
-const headers = computed(() => ({
-	"X-API-KEY": "6HkKf6zXIQ9g5U7nD8nGvh4enznFY6ASV8qCIC57",
-}));
+
+export const getApiKey = () => {
+  const config = useRuntimeConfig()
+  return config.app.apiKey
+}
 
 export const getData01 = async () => {
 	const url =
@@ -11,7 +13,9 @@ export const getData01 = async () => {
 		"&yearRight=2025";
 	const { data: result01 } = await useFetch(url, {
 		method: "GET",
-		headers,
+		headers: {
+			"X-API-KEY": getApiKey(),
+		}
 	});
 	if (result01.value) {
 		const { message, result } = result01.value as any;
@@ -29,7 +33,9 @@ export const getData02 = async () => {
 		"&yearRight=2025";
 	const { data: result01 } = await useFetch(url, {
 		method: "GET",
-		headers,
+		headers: {
+			"X-API-KEY": getApiKey(),
+		}
 	});
 	if (result01.value) {
 		const { message, result } = result01.value as any;
@@ -42,7 +48,9 @@ export const getData03 = async () => {
 	const url = "https://opendata.resas-portal.go.jp/api/v1/regions/broad";
 	const { data: result01 } = await useFetch(url, {
 		method: "GET",
-		headers,
+		headers: {
+			"X-API-KEY": getApiKey(),
+		}
 	});
 	if (result01.value) {
 		const { message, result } = result01.value as any;
@@ -56,7 +64,9 @@ export const getData04 = async (areaVaule: number) => {
 			`?prefCode=${areaVaule}`,
 		{
 			method: "GET",
-			headers,
+			headers: {
+				"X-API-KEY": getApiKey(),
+			}
 		},
 	);
 	if (result01.value) {
@@ -72,7 +82,9 @@ export const getData06 = async (areaVaule: number) => {
 			`&cityCode=-`,
 		{
 			method: "GET",
-			headers,
+			headers: {
+				"X-API-KEY": getApiKey(),
+			}
 		},
 	);
 	if (result01.value) {
