@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a {
+	display: inline-block;
+}
+
+ul,
+ol {
+	list-style: none;
+}
+
+.clip {
+	cursor: copy;
+}

@@ -1,15 +1,37 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config'
+
 export default defineNuxtConfig({
-  devtools: { enabled: true },
-  // rootDir: "src/",
+  runtimeConfig: {
+    app: {
+      apiKey: process.env.API_KEY,
+      localUrl: process.env.LOCAL_URL
+    }
+  },
+
+  // devtools: { enabled: true },
+  srcDir: 'src/',
+
   modules: [
-    "@pinia/nuxt",
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
   ],
-  css: ["~/assets/style/main.css"],
+
+  css: ['/assets/style/main.css'],
+
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
   },
+
+  vite:{
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
+  },
+
+  compatibilityDate: '2025-02-06',
 })

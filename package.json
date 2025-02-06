@@ -7,22 +7,48 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "fmtw": "biome format --write ./src",
+    "fmt": "biome format ./src",
+    "lint:fix": "biome lint --apply ./src",
+    "test": "vitest",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@nuxt/devtools": "latest",
+    "@types/bcryptjs": "^2",
+    "@types/jsonwebtoken": "^9",
+    "@types/three": "^0.158.2",
     "autoprefixer": "^10.4.16",
-    "nuxt": "^3.8.0",
+    "jsdom": "^23.2.0",
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.5",
+    "typescript": "^5.7.3",
+    "vitest": "^1.2.1",
     "vue": "^3.3.7",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue-test-utils": "^1.0.0-beta.11"
   },
   "dependencies": {
+    "@nuxtjs/i18n": "^9.1.5",
     "@pinia/nuxt": "^0.5.1",
-    "pinia": "^2.1.7"
+    "@prisma/client": "^6.3.0",
+    "bcryptjs": "^2.4.3",
+    "dayjs": "^1.11.10",
+    "husky": "^9.1.7",
+    "jsonwebtoken": "^9.0.2",
+    "nuxi": "^3.21.1",
+    "nuxt": "^3.15.4",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^4.2.0",
+    "prisma": "^6.3.0",
+    "three": "^0.158.0",
+    "vue-i18n": "^11.1.0",
+    "vuedraggable": "next"
   },
   "overrides": {
     "vue": "latest"
-  }
+  },
+  "packageManager": "yarn@4.6.0"
 }
