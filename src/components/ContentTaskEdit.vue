@@ -18,6 +18,7 @@ const authStore = useAuthStore();
 const { taskList } = storeToRefs(taskStore);
 const { authUser } = storeToRefs(authStore);
 
+// 今後使う予定
 const props = defineProps({
 	item: {
 		type: Object as PropType<Task>,
@@ -70,18 +71,12 @@ const updateTaskAction = () => {
 };
 
 const setUpdateTaskAction = (task: Task) => {
+  console.log(task);
 	updateItem.value = task;
 	title.value = task.title;
 	detail.value = task.detail ?? "";
 	evaluationFactor.value = task.evaluationFactor;
 	editType.value = "update";
-};
-
-const deleteTaskAction = (task: Task) => {
-	if (confirm("この操作は取り消せません。削除しますか？")) {
-		taskStore.deleteTask(task);
-		setTaskList();
-	}
 };
 
 onMounted(() => {
@@ -112,16 +107,16 @@ onMounted(() => {
       <div class="field">
         <parts-task-form
           :title="title"
-          :detail="detail"
+          :body="detail"
           :evaluationFactor="evaluationFactor"
-          @changeTitleAction="(value) => {
+          @changeTitleAction="(value: string) => {
             title = value
           }"
-          @changeBodyAction="(value) => {
+          @changeBodyAction="(value: string) => {
             detail = value
           }"
-          @changeEvaluationFactorAction="(value) => {
-            evaluationFactor = value
+          @changeEvaluationFactorAction="(value: string) => {
+            evaluationFactor = Number(value)
           }"
         />
         <p v-if="editType === 'new'">
@@ -144,11 +139,10 @@ onMounted(() => {
         :key="item.id"
         class="item mb-2 mr-2 p-1 max-w-xs w-full shadow sticky"
       >
-       <h5 class="pb-2">{{ item.title }}</h5>
-       <parts-action-btns
-         @viewAction="() => {}"
+       <content-task-card
+         :item="item"
          @updateAction="setUpdateTaskAction(item)"
-         @deleteAction="deleteTaskAction(item)"
+         @setAction="setTaskList()"
        />
       </div>
     </div>

@@ -1,8 +1,7 @@
-
 export const getApiKey = () => {
-  const config = useRuntimeConfig()
-  return config.app.apiKey
-}
+	const config = useRuntimeConfig();
+	return config.app.apiKey;
+};
 
 export const getData01 = async () => {
 	const url =
@@ -15,7 +14,7 @@ export const getData01 = async () => {
 		method: "GET",
 		headers: {
 			"X-API-KEY": getApiKey(),
-		}
+		},
 	});
 	if (result01.value) {
 		const { message, result } = result01.value as any;
@@ -35,7 +34,7 @@ export const getData02 = async () => {
 		method: "GET",
 		headers: {
 			"X-API-KEY": getApiKey(),
-		}
+		},
 	});
 	if (result01.value) {
 		const { message, result } = result01.value as any;
@@ -50,7 +49,7 @@ export const getData03 = async () => {
 		method: "GET",
 		headers: {
 			"X-API-KEY": getApiKey(),
-		}
+		},
 	});
 	if (result01.value) {
 		const { message, result } = result01.value as any;
@@ -66,7 +65,7 @@ export const getData04 = async (areaVaule: number) => {
 			method: "GET",
 			headers: {
 				"X-API-KEY": getApiKey(),
-			}
+			},
 		},
 	);
 	if (result01.value) {
@@ -84,7 +83,7 @@ export const getData06 = async (areaVaule: number) => {
 			method: "GET",
 			headers: {
 				"X-API-KEY": getApiKey(),
-			}
+			},
 		},
 	);
 	if (result01.value) {

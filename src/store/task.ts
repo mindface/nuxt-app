@@ -1,11 +1,9 @@
-import { defineStore, storeToRefs } from "pinia";
+import { defineStore } from "pinia";
 import type { AddTask, Task } from "../types/Task";
-import { useAuthStore } from "./auth";
 
 export const useTaskStore = defineStore("task", () => {
 	const taskList = ref<Task[]>([]);
 	const taskItem = ref<Task>();
-	const authStore = useAuthStore();
 	const headers = {
 		"Content-Type": "application/json",
 		Authorization: `Bearer ${useCookie("auth_token").value}`,
@@ -13,15 +11,16 @@ export const useTaskStore = defineStore("task", () => {
 
 	async function getTaskItem(userId: number, taskId?: number) {
 		try {
-			const { data, error } = await useFetch(
+			const res:Task[] = await $fetch(
 				`/api/task?userId=${userId}&id=${taskId}`,
 				{
 					method: "GET",
 					headers: headers,
 				},
 			);
-			if (data) {
-				taskItem.value = data.value as Task;
+			if (res) {
+        console.log(res);
+				taskItem.value = res[0] as Task;
 			}
 		} catch (error) {
 			console.error(error);
@@ -33,7 +32,6 @@ export const useTaskStore = defineStore("task", () => {
 				method: "GET",
 				headers: headers,
 			});
-			console.log(items);
 			taskList.value = items ?? [];
 		} catch (error) {
 			console.error(error);

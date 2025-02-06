@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { defineStore } from "pinia";
 import type { User } from "../types/User";
+let tokenCheckInterval: NodeJS.Timeout | null = null;
 
 export const useAuthStore = defineStore("auth", () => {
 	const authUser = ref<User | null>();
@@ -12,7 +13,6 @@ export const useAuthStore = defineStore("auth", () => {
 	function setUser(userInfo: User, token: string) {
 		authUser.value = userInfo;
 		tokenId.value = token;
-		console.log(userInfo);
 		useCookie("auth_user").value = JSON.stringify(userInfo);
 		useCookie("auth_token").value = token;
 		expiresAt.value = Date.now() + 3600 * 1000;
@@ -35,6 +35,10 @@ export const useAuthStore = defineStore("auth", () => {
 		tokenId.value = "";
 		await useFetch("/api/logout");
 		navigateTo("/login");
+		if(tokenCheckInterval) {
+			clearInterval(tokenCheckInterval);
+			tokenCheckInterval = null;
+		}
 	}
 
 	function getToken() {
@@ -44,7 +48,7 @@ export const useAuthStore = defineStore("auth", () => {
 	function startTokenExpirationCheck() {
 		const expiresAt = useCookie("auth_expires_at").value;
 		if (process.client && expiresAt) {
-			setInterval(() => {
+			tokenCheckInterval = setInterval(() => {
 				console.log("🔍 クッキーの有効期限を確認中...");
 				const expiresAt = Number(useCookie("auth_expires_at").value) || null;
 				console.log(
@@ -55,7 +59,7 @@ export const useAuthStore = defineStore("auth", () => {
 					console.log("⚠️ 認証期限が切れました！ログアウト処理を実行します...");
 					logoutAuth();
 				}
-			}, 60 * 100);
+			}, 60 * 1000);
 		}
 	}
 
