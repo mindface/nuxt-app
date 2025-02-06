@@ -13,10 +13,10 @@ const { item } = defineProps({
 	item: {
 		type: Object as PropType<Task>,
 		default: () => ({}),
-	}
+	},
 });
 
-const taskItem = ref<Task|null>();
+const taskItem = ref<Task | null>();
 
 const setUpdateTaskAction = () => {
 	emit("updateAction");
@@ -25,18 +25,17 @@ const setUpdateTaskAction = () => {
 const deleteTaskAction = (task: Task) => {
 	if (confirm("この操作は取り消せません。削除しますか？")) {
 		taskStore.deleteTask(task);
-    emit("setAction");
+		emit("setAction");
 	}
 };
 
 const viewCardAcction = (task: Task) => {
-  viewSwitch.value = !viewSwitch.value;
-  if(viewSwitch.value) {
-    taskItem.value = task;
-    taskStore.getTaskItem(task.userId, task.id);
-  }
-}
-
+	viewSwitch.value = !viewSwitch.value;
+	if (viewSwitch.value) {
+		taskItem.value = task;
+		taskStore.getTaskItem(task.userId, task.id);
+	}
+};
 </script>
 
 <template>

@@ -35,7 +35,7 @@ export const useAuthStore = defineStore("auth", () => {
 		tokenId.value = "";
 		await useFetch("/api/logout");
 		navigateTo("/login");
-		if(tokenCheckInterval) {
+		if (tokenCheckInterval) {
 			clearInterval(tokenCheckInterval);
 			tokenCheckInterval = null;
 		}

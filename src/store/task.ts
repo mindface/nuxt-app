@@ -11,7 +11,7 @@ export const useTaskStore = defineStore("task", () => {
 
 	async function getTaskItem(userId: number, taskId?: number) {
 		try {
-			const res:Task[] = await $fetch(
+			const res: Task = await $fetch(
 				`/api/task?userId=${userId}&id=${taskId}`,
 				{
 					method: "GET",
@@ -19,8 +19,7 @@ export const useTaskStore = defineStore("task", () => {
 				},
 			);
 			if (res) {
-        console.log(res);
-				taskItem.value = res[0] as Task;
+				taskItem.value = res as Task;
 			}
 		} catch (error) {
 			console.error(error);

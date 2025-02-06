@@ -71,7 +71,7 @@ const updateTaskAction = () => {
 };
 
 const setUpdateTaskAction = (task: Task) => {
-  console.log(task);
+	console.log(task);
 	updateItem.value = task;
 	title.value = task.title;
 	detail.value = task.detail ?? "";

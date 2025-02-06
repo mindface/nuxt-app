@@ -9,12 +9,13 @@ export default defineEventHandler(async (event) => {
 	if (event.method === "GET") {
 		const query = getQuery(event);
 		if (query.userId && query.id) {
-			return await prisma.task.findMany({
+			const items = await prisma.task.findMany({
 				where: {
 					userId: Number(query.userId),
 					id: Number(query.id),
 				},
 			});
+			return items[0];
 		} else if (query.userId) {
 			return await prisma.task.findMany({
 				where: {
