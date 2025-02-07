@@ -67,7 +67,7 @@ watch(
       <input
         type="text"
         v-model="title"
-        @keyup="(v) => changeTitleAction(v)"
+        @keyup="(v:Event) => changeTitleAction(v)"
         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         placeholder="title"
       />
@@ -78,7 +78,7 @@ watch(
         v-model="body"
         cols="30"
         rows="10"
-        @keyup="(v) => changeBodyAction(v)"
+        @keyup="(v:Event) => changeBodyAction(v)"
         placeholder="description"
       ></textarea>
     </div>
@@ -90,7 +90,7 @@ watch(
         min="0"
         max="100"
         step="1"
-        @chnage="(v) => changeEvaluationFactorAction(v)"
+        @chnage="(v:Event) => changeEvaluationFactorAction(v)"
       />
       {{ evaluationFactor }}
     </div>

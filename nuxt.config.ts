@@ -13,7 +13,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
-    '@nuxtjs/i18n',
+    // '@nuxtjs/i18n',
   ],
 
   css: ['/assets/style/main.css'],
