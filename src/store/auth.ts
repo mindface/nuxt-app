@@ -47,7 +47,7 @@ export const useAuthStore = defineStore("auth", () => {
 
 	function startTokenExpirationCheck() {
 		if (tokenCheckInterval) {
-		  clearInterval(tokenCheckInterval);
+			clearInterval(tokenCheckInterval);
 		}
 		const expiresAt = useCookie("auth_expires_at").value;
 		if (process.client && expiresAt) {
