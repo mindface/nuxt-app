@@ -27,7 +27,8 @@ export default defineNuxtPlugin(() => {
 						>["method"];
 					}
 
-					return await $fetch<T>(url, options);
+					const response = await $fetch<T>(url, options);
+					return response as T;
 				} catch (error: any) {
 					handleAuthError(error);
 					throw error;

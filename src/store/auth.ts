@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import { defineStore } from "pinia";
-import type { User } from "../types/User";
+import type { User, AddUser } from "../types/User";
+import type { UserResponse } from "../types/ApiRespose";
+
 let tokenCheckInterval: NodeJS.Timeout | null = null;
 
 export const useAuthStore = defineStore("auth", () => {
@@ -33,7 +35,7 @@ export const useAuthStore = defineStore("auth", () => {
 		useCookie("auth_user").value = null;
 		authUser.value = null;
 		tokenId.value = "";
-		await useFetch("/api/logout");
+		await $fetch("/api/logout");
 		navigateTo("/login");
 		if (tokenCheckInterval) {
 			clearInterval(tokenCheckInterval);
@@ -43,6 +45,66 @@ export const useAuthStore = defineStore("auth", () => {
 
 	function getToken() {
 		return tokenId.value;
+	}
+
+	async function loginUserAction(siginupInfo: {
+		email: string;
+		password: string;
+	}) {
+		const response = (await $fetch("/api/login", {
+			method: "POST",
+			body: {
+				email: siginupInfo.email,
+				password: siginupInfo.password,
+			},
+		})) as { user: User; status: number; token: string };
+		setUser(response.user, response.token);
+		navigateTo({ path: "/" });
+	}
+
+	async function signupUserAction(loginInfo: AddUser) {
+		const response = await $fetch("/api/user", {
+			method: "POST",
+			body: {
+				name: loginInfo.name,
+				email: loginInfo.email,
+				password: loginInfo.password,
+				detail: loginInfo.detail,
+				status: "active",
+				role: "user",
+				isActive: true,
+			},
+		});
+		console.log(response);
+	}
+
+	async function updateUserAction(updateUser: User) {
+		try {
+			const data = await $fetch<UserResponse>(
+				`/api/user?id=${authUser.value?.id}`,
+				{
+					method: "PUT",
+					body: updateUser,
+				},
+			);
+			if (data) {
+				authUser.value = data.user;
+				useCookie("auth_user").value = JSON.stringify(data.user);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	async function deleteUserAction() {
+		try {
+			const data = await $fetch(`/api/user?id=${authUser.value?.id}`, {
+				method: "DELETE",
+			});
+			console.log(data);
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	function startTokenExpirationCheck() {
@@ -75,6 +137,10 @@ export const useAuthStore = defineStore("auth", () => {
 		setAuth,
 		logoutAuth,
 		getToken,
+		loginUserAction,
+		signupUserAction,
+		updateUserAction,
+		deleteUserAction,
 		startTokenExpirationCheck,
 	};
 });

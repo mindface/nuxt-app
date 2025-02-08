@@ -13,3 +13,10 @@ export type User = {
 	// 削除用に設定
 	password: string;
 };
+
+export type AddUser = {
+	name: string;
+	email: string;
+	password: string;
+	detail: string;
+};

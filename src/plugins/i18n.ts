@@ -5,8 +5,8 @@ import en from "../../locales/en.json";
 import ja from "../../locales/ja.json";
 
 export default defineNuxtPlugin(({ vueApp }) => {
+	// すでに登録されていないか確認
 	if (!vueApp.config.globalProperties.$i18n) {
-		// すでに登録されていないか確認
 		const i18n = createI18n({
 			legacy: false, // Composition API
 			globalInjection: true, // $tをグローバル化

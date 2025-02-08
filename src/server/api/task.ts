@@ -1,98 +1,55 @@
-import { PrismaClient } from "@prisma/client";
 import { useAuth } from "../utils/auth";
-
-const prisma = new PrismaClient();
+import {
+	getTasks,
+	createTask,
+	updateTask,
+	deleteTask,
+} from "../services/taskService";
 
 export default defineEventHandler(async (event) => {
 	await useAuth(event);
+	try {
+		const method = event.method;
+		if (method === "GET") {
+			const query = getQuery(event);
+			const userId = Number(query.userId);
+			const taskId = query.id ? Number(query.id) : undefined;
 
-	if (event.method === "GET") {
-		const query = getQuery(event);
-		if (query.userId && query.id) {
-			const items = await prisma.task.findMany({
-				where: {
-					userId: Number(query.userId),
-					id: Number(query.id),
-				},
-			});
-			return items[0];
-		} else if (query.userId) {
-			return await prisma.task.findMany({
-				where: {
-					userId: Number(query.userId),
-				},
-			});
-		}
-	} else if (event.method === "POST") {
-		const body = await readBody(event);
-		try {
-			const newTask = await prisma.task.create({
-				data: {
-					title: body.title,
-					detail: body.detail,
-					evaluationFactor: body.evaluationFactor,
-					status: "run",
-					userId: body.userId,
-				},
-			});
-			return {
-				status: 201,
-				user: newTask,
-			};
-		} catch (error) {
-			return {
-				status: 500,
-				message: "Error creating user",
-			};
-		}
-	} else if (event.method === "PUT") {
-		const body = await readBody(event);
-		if (!body.id) {
-			return { status: 400, message: "Task ID is required for update" };
-		}
-		try {
-			const updatedUser = await prisma.task.update({
-				where: { id: body.id },
-				data: {
-					title: body.title,
-					detail: body.detail,
-					evaluationFactor: body.evaluationFactor,
-					status: body.status,
-					userId: body.userId,
-				},
-			});
+			if (!userId) return { status: 400, message: "User ID is required" };
 
-			return {
-				status: 200,
-				user: updatedUser,
-			};
-		} catch (error) {
-			return {
-				status: 500,
-				message: "Error creating user",
-			};
-		}
-	} else if (event.method === "DELETE") {
-		const query = getQuery(event);
-
-		if (!query.id) {
-			return { status: 400, message: "Task ID is required for deletion" };
+			const tasks = await getTasks(userId, taskId);
+			return taskId ? tasks : { status: 200, tasks };
 		}
 
-		try {
-			await prisma.task.delete({
-				where: { id: Number(query.id) },
-			});
+		if (method === "POST") {
+			const body = await readBody(event);
+			if (!body.userId) return { status: 400, message: "User ID is required" };
 
-			return {
-				status: 200,
-				message: "Task deleted successfully",
-			};
-		} catch (error) {
-			return {
-				status: 500,
-				message: "Error deleting user",
-			};
+			const newTask = await createTask(body);
+			return { status: 201, task: newTask };
 		}
+
+		if (method === "PUT") {
+			const body = await readBody(event);
+			if (!body.id)
+				return { status: 400, message: "Task ID is required for update" };
+
+			const updatedTask = await updateTask(body.id, body);
+			return { status: 200, task: updatedTask };
+		}
+
+		if (method === "DELETE") {
+			const query = getQuery(event);
+			if (!query.id)
+				return { status: 400, message: "Task ID is required for deletion" };
+
+			await deleteTask(Number(query.id));
+			return { status: 200, message: "Task deleted successfully" };
+		}
+
+		return { status: 405, message: "Method Not Allowed" };
+	} catch (error) {
+		console.error(error);
+		return { status: 500, message: "Internal Server Error" };
 	}
 });

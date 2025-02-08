@@ -1,100 +1,60 @@
-import { PrismaClient } from "@prisma/client";
-import bcryptjs from "bcryptjs";
-
-const prisma = new PrismaClient();
+import { defineEventHandler, getQuery, readBody } from "h3";
+import {
+	getUserById,
+	createUser,
+	updateUser,
+	deleteUser,
+} from "../services/userService";
 
 export default defineEventHandler(async (event) => {
-	if (event.method === "GET") {
-		const query = getQuery(event);
-		if (query.id) {
-			return await prisma.user.findUnique({
-				where: { id: Number(query.id) },
-			});
-		} else {
-			return {
-				status: 500,
-				message: "Error creating user id",
-			};
-		}
-	} else if (event.method === "POST") {
-		const body = await readBody(event);
-		const hashedPassword = await bcryptjs.hash(body.password, 10);
-		try {
-			const newUser = await prisma.user.create({
-				data: {
-					name: body.name,
-					email: body.email,
-					password: hashedPassword,
-					detail: body.detail,
-					status: body.status,
-					role: body.role || "user",
-					isActive: body.isActive !== undefined ? body.isActive : true,
-					lastLogin: null,
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				},
-			});
+	try {
+		const method = event.method;
 
-			return {
-				status: 201,
-				user: newUser,
-			};
-		} catch (error) {
-			return {
-				status: 500,
-				message: "Error creating user",
-			};
-		}
-	} else if (event.method === "PUT") {
-		const body = await readBody(event);
-		if (!body.id) {
-			return { status: 400, message: "User ID is required for update" };
-		}
-		try {
-			const updatedUser = await prisma.user.update({
-				where: { id: body.id },
-				data: {
-					name: body.name,
-					email: body.email,
-					detail: body.detail,
-					status: body.status,
-					role: body.role,
-					isActive: body.isActive,
-					updatedAt: new Date(),
-				},
-			});
+		if (method === "GET") {
+			const query = getQuery(event);
+			const userId = query.id ? Number(query.id) : undefined;
+			if (!userId) return { status: 400, message: "User ID is required" };
 
-			return {
-				status: 200,
-				user: updatedUser,
-			};
-		} catch (error) {
-			return {
-				status: 500,
-				message: "Error updating user",
-			};
-		}
-	} else if (event.method === "DELETE") {
-		const query = getQuery(event);
-
-		if (!query.id) {
-			return { status: 400, message: "User ID is required for deletion" };
+			const user = await getUserById(userId);
+			return user
+				? { status: 200, user }
+				: { status: 404, message: "User not found" };
 		}
 
-		try {
-			await prisma.user.delete({
-				where: { id: Number(query.id) },
-			});
+		if (method === "POST") {
+			const body = await readBody(event);
+			if (!body.name || !body.email || !body.password) {
+				return {
+					status: 400,
+					message: "Name, email, and password are required",
+				};
+			}
 
-			return {
-				status: 200,
-				message: "User deleted successfully",
-			};
-		} catch (error) {
-			return {
-				status: 500,
-				message: "Error deleting user",
-			};
+			const newUser = await createUser(body);
+			return { status: 201, user: newUser };
 		}
+
+		if (method === "PUT") {
+			const body = await readBody(event);
+			if (!body.id)
+				return { status: 400, message: "User ID is required for update" };
+
+			const updatedUser = await updateUser(body.id, body);
+			return { status: 200, user: updatedUser };
+		}
+
+		if (method === "DELETE") {
+			const query = getQuery(event);
+			if (!query.id)
+				return { status: 400, message: "User ID is required for deletion" };
+
+			await deleteUser(Number(query.id));
+			return { status: 200, message: "User deleted successfully" };
+		}
+
+		return { status: 405, message: "Method Not Allowed" };
+	} catch (error) {
+		console.error(error);
+		return { status: 500, message: "Internal Server Error" };
 	}
 });

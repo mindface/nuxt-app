@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "../store/auth";
 import { TimeHelper } from "../utils/time-helper";
+import type { User } from "../types/User";
 
 const authStore = useAuthStore();
 const { authUser } = storeToRefs(authStore);
@@ -45,33 +46,20 @@ const updateUserSwitchAction = () => {
 };
 
 const updateUserAction = async () => {
-	const updateUser = {
-		...authUser.value,
-		name: userInfo.name,
-		email: userInfo.email,
-		detail: userInfo.detail,
-	};
-	try {
-		const data = await $fetch(`/api/user?id=${authUser.value?.id}`, {
-			method: "PUT",
-			body: updateUser,
-		});
-		console.log(data);
-	} catch (error) {
-		console.error(error);
+	if (authUser.value) {
+		const updateUser: User = {
+			...authUser.value,
+			name: userInfo.name,
+			email: userInfo.email,
+			detail: userInfo.detail,
+		};
+		authStore.updateUserAction(updateUser);
 	}
 };
 
 const deleteUserAction = async () => {
 	if (confirm("この操作は取り消せません。実行しますか。")) {
-		try {
-			const data = await $fetch(`/api/user?id=${authUser.value?.id}`, {
-				method: "DELETE",
-			});
-			console.log(data);
-		} catch (error) {
-			console.error(error);
-		}
+		authStore.deleteUserAction();
 	}
 };
 
