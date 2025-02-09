@@ -5,6 +5,7 @@ import {
 	updateTask,
 	deleteTask,
 } from "../services/taskService";
+import { defineEventHandler, getQuery, readBody } from "h3";
 
 export default defineEventHandler(async (event) => {
 	await useAuth(event);

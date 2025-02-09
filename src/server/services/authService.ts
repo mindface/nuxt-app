@@ -8,18 +8,12 @@ export const authenticateUser = async (email: string, password: string) => {
 	});
 
 	if (!user) {
-		throw createError({
-			statusCode: 401,
-			message: "Invalid email or password",
-		});
+		throw Error("Invalid email or password");
 	}
 
 	const isPasswordValid = await bcryptjs.compare(password, user.password);
 	if (!isPasswordValid) {
-		throw createError({
-			statusCode: 401,
-			message: "Invalid email or password",
-		});
+		throw Error("Invalid email or password");
 	}
 
 	// パスワードをレスポンスから除外

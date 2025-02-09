@@ -3,7 +3,6 @@ import { storeToRefs } from "pinia";
 import { useAuthStore } from "../store/auth";
 import { useTaskStore } from "../store/task";
 import type { AddTask, Task } from "../types/Task";
-import PartsActionBtns from "./PartsActionBtns.vue";
 import PartsTaskForm from "./PartsTaskForm.vue";
 
 const title = ref("");

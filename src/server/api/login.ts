@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
 		if (!body.email || !body.password) {
 			return { status: 400, message: "Email and password are required" };
 		}
-
 		const { user, token, expiresAt } = await authenticateUser(
 			body.email,
 			body.password,
