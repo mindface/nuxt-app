@@ -6577,6 +6577,7 @@ __metadata:
     vue-i18n: "npm:^11.1.0"
     vue-router: "npm:^4.2.5"
     vue-test-utils: "npm:^1.0.0-beta.11"
+    vue-toast-notification: "npm:^3.1.3"
     vuedraggable: "npm:next"
   languageName: unknown
   linkType: soft
@@ -9629,6 +9630,15 @@ __metadata:
     vue: 2.x
     vue-template-compiler: ^2.x
   checksum: 10c0/985b564d5a7eea9a3f97198b0d3b7ae3b409dcf30f440ef58810115dddb479b3fdebf3b506744030927f5c956a6850d5bf39e9696dcfad76662939f1b08ec024
+  languageName: node
+  linkType: hard
+
+"vue-toast-notification@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "vue-toast-notification@npm:3.1.3"
+  peerDependencies:
+    vue: ^3.0
+  checksum: 10c0/49dbddefdafc6f0c288f51ab49220accb7513722e5004530e1a21b220d9d8a7973e558d52c3478c6936b76d449c5a8570230d034a84d15606261ebff5385cf91
   languageName: node
   linkType: hard
 

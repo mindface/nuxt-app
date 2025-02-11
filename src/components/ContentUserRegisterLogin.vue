@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from "../store/auth";
-import type { User } from "../types/User";
+const { $toast, $t } = useNuxtApp();
 const authStore = useAuthStore();
 const userLoginSwitch = ref(false);
 const loginInfo = reactive({
@@ -17,12 +17,15 @@ const siginupInfo = reactive({
 	isActive: true,
 });
 
-const loginAction = () => {
+const loginSwitchAction = () => {
 	userLoginSwitch.value = !userLoginSwitch.value;
 };
 
-const login = () => {
-	authStore.loginUserAction(loginInfo);
+const login = async () => {
+	const res = await authStore.loginUserAction(loginInfo);
+	if (res && res.message === "success") {
+		$toast.success($t("login"));
+	}
 };
 
 const signup = async () => {
@@ -40,7 +43,7 @@ const getApi = async () => {
 <template>
   <div>
     <div class="info-from">
-      <button class="btn" @click="loginAction">{{ userLoginSwitch ? "login pageに変更" : "singnup pageに変更" }}</button>
+      <button class="btn" @click="loginSwitchAction">{{ userLoginSwitch ? "login pageに変更" : "singnup pageに変更" }}</button>
     </div>
     <div v-if="!userLoginSwitch" class="signup-from">
       <p>email : <input type="text" v-model="loginInfo.email"></p>

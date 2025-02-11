@@ -51,15 +51,23 @@ export const useAuthStore = defineStore("auth", () => {
 		email: string;
 		password: string;
 	}) {
-		const response = (await $fetch("/api/login", {
-			method: "POST",
-			body: {
-				email: siginupInfo.email,
-				password: siginupInfo.password,
-			},
-		})) as { user: User; status: number; token: string };
-		setUser(response.user, response.token);
-		navigateTo({ path: "/" });
+		try {
+			const response = (await $fetch("/api/login", {
+				method: "POST",
+				body: {
+					email: siginupInfo.email,
+					password: siginupInfo.password,
+				},
+			})) as { user: User; status: number; token: string };
+			if (response.status >= 200) {
+				setUser(response.user, response.token);
+				navigateTo({ path: "/" });
+				return { message: "success" };
+			}
+		} catch (error) {
+			console.log(error);
+			return { message: "error" };
+		}
 	}
 
 	async function signupUserAction(loginInfo: AddUser) {

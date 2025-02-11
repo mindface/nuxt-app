@@ -1,4 +1,5 @@
 {
   "hello": "こんにちは、{name}！",
-  "language": "言語"
+  "language": "言語",
+  "login": "ログインしました。"
 }

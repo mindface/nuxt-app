@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+const { t, locale } = useI18n();
 import ContentTask from "../components/ContentTask.vue";
 import { useAuthStore } from "../store/auth";
 const route = useRoute();
@@ -64,6 +66,14 @@ const pathList = [
         <span class="icon-item"></span>
       </div>
     </div>
+    <h1>{{ t('hello', { name: 'vue-i18n' }) }}</h1>
+    <form>
+      <label for="locale-select">{{ t('language') }}: </label>
+      <select id="locale-select" v-model="locale">
+        <option value="en-US">en</option>
+        <option value="ja">ja</option>
+      </select>
+    </form>
     <div v-if="menuSwitch" class="menu-box fixed z-10">
       <ul class="bg-white p-1 shadow">
         <li v-for="item in pathList" :key="item.pathName">
@@ -72,7 +82,7 @@ const pathList = [
       </ul>
     </div>
     <button
-      v-if="route.fullPath !== '/login' && authStore.email !== ''"
+      v-if="route.fullPath !== '/login' && authStore"
       class="bg-sky-300 font-semibold text-white py-2 px-4 rounded"
       @click="logoutAction"
     >Logout</button>
