@@ -36,7 +36,7 @@ async function main() {
     const user = await prisma.user.create({
       data: {
         name: `User${i}`,
-        email: `test${Date.now()}0${i}@test.com`,
+        email: `test0${i}@test.com`,
         password: hashedPassword,
         detail: `Detail for User${i}`,
         status: "active",
@@ -61,11 +61,11 @@ async function main() {
   console.log('✅ Users seeded successfully');
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+// main()
+//   .catch((e) => {
+//     console.error(e);
+//     process.exit(1);
+//   })
+//   .finally(async () => {
+//     await prisma.$disconnect();
+//   });
