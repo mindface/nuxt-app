@@ -5,7 +5,6 @@ yarn fmt
 
 echo "Running tests before push..."
 export DATABASE_URL="postgresql://root:1234ewq1@localhost:5432/test_db?schema=public"
-npx prisma migrate reset --force --skip-seed
 
 # yarn test --run
 
