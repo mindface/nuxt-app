@@ -38,7 +38,7 @@ export const updateTask = async (
 };
 
 export const deleteTask = async (id: number) => {
-	return await prisma.task.delete({
+	await prisma.task.delete({
 		where: { id },
 	});
 };

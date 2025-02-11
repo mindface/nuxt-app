@@ -2,6 +2,8 @@ import prisma from "../utils/prisma";
 import { hashPassword } from "../utils/bcrypt";
 
 export const getUserById = async (id: number) => {
+	const users = await prisma.user.findMany();
+	console.log(users);
 	return await prisma.user.findUnique({
 		where: { id },
 	});
@@ -20,7 +22,7 @@ export const createUser = async (data: {
 	updatedAt: Date;
 }) => {
 	const hashedPassword = await hashPassword(data.password);
-	return await prisma.user.create({
+	const newUser = await prisma.user.create({
 		data: {
 			...data,
 			password: hashedPassword,
@@ -31,6 +33,7 @@ export const createUser = async (data: {
 			updatedAt: new Date(),
 		},
 	});
+	return newUser;
 };
 
 export const updateUser = async (
@@ -44,17 +47,18 @@ export const updateUser = async (
 		isActive: boolean;
 	},
 ) => {
-	return await prisma.user.update({
+	const updateUser = await prisma.user.update({
 		where: { id },
 		data: {
 			...data,
 			updatedAt: new Date(),
 		},
 	});
+	return updateUser;
 };
 
 export const deleteUser = async (id: number) => {
-	return await prisma.user.delete({
+	await prisma.user.delete({
 		where: { id },
 	});
 };

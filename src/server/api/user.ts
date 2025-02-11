@@ -5,10 +5,20 @@ import {
 	updateUser,
 	deleteUser,
 } from "../services/userService";
+import { useAuth } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
 	try {
 		const method = event.method;
+
+		if (["PUT", "DELETE", "GET"].includes(method)) {
+			try {
+				await useAuth(event);
+			} catch (error) {
+				console.error(error);
+				return { status: 401, message: "Unauthorized" };
+			}
+		}
 
 		if (method === "GET") {
 			const query = getQuery(event);
@@ -40,13 +50,15 @@ export default defineEventHandler(async (event) => {
 				return { status: 400, message: "User ID is required for update" };
 
 			const updatedUser = await updateUser(body.id, body);
+
 			return { status: 200, user: updatedUser };
 		}
 
 		if (method === "DELETE") {
 			const query = getQuery(event);
-			if (!query.id)
+			if (!query.id) {
 				return { status: 400, message: "User ID is required for deletion" };
+			}
 
 			await deleteUser(Number(query.id));
 			return { status: 200, message: "User deleted successfully" };

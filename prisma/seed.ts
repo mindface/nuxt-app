@@ -29,14 +29,14 @@ async function main() {
   // );
   // await prisma.user.createMany({ data: await Promise.all(users) });
 
-  for (let i = 1; i <= 200; i++) {
+  for (let i = 1; i <= 20; i++) {
     const hashedPassword = await bcrypt.hash("password123", 10);
-    
+
     // ユーザーを作成
     const user = await prisma.user.create({
       data: {
         name: `User${i}`,
-        email: `test0${i}@test.com`,
+        email: `test${Date.now()}0${i}@test.com`,
         password: hashedPassword,
         detail: `Detail for User${i}`,
         status: "active",

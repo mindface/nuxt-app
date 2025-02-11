@@ -12,11 +12,12 @@ describe('Prisma User Model', () => {
     await prisma.task.deleteMany();
     await prisma.user.deleteMany();
 
+    const uniqueEmail = `test+${Date.now()}@example.com`;
     // テスト用のユーザーを作成
     const user:User = await prisma.user.create({
         data: {
           name: 'Test User',
-          email: 'test@example.com',// @unique 制約のため一意の値
+          email: uniqueEmail,
           password: 'securepassword',
           detail: 'Test user details',
           status: 'active',
@@ -30,6 +31,7 @@ describe('Prisma User Model', () => {
     });
   
     afterAll(async () => {
+
       // テスト後にデータを削除
       await prisma.task.deleteMany();
       await prisma.user.deleteMany();

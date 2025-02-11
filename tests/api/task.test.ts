@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeAll, afterAll, beforeEach } from "vitest";
-import { defineEventHandler, getQuery, readBody } from "h3";
 import { PrismaClient } from "@prisma/client";
 import request from 'supertest';
-import { useAuth } from "../../src/server/utils/auth";
 import {
   getTasks,
   createTask,
@@ -10,7 +8,7 @@ import {
   deleteTask,
 } from "../../src/server/services/taskService";
 import taskHandler from "../../src/server/api/task";
-import { createApp, toNodeListener, createEvent } from 'h3';
+import { createApp, toNodeListener } from 'h3';
 
 const prisma = new PrismaClient();
 
@@ -18,7 +16,7 @@ const app = createApp();
 app.use('/api/task', taskHandler);
 const server = toNodeListener(app);
 
-// 認証をモック（成功するように）
+// 認証をモック
 vi.mock("../../src/server/utils/auth", () => ({
   useAuth: vi.fn(() => Promise.resolve()),
 }));
@@ -84,7 +82,7 @@ describe("Task API Handler", () => {
       },
     ];
 
-    (getTasks as any).mockResolvedValue(mockTasks);
+    vi.mocked(getTasks).mockResolvedValue(mockTasks);
 
     const response = await request(server).get("/api/task").query({ userId: testUserId.toString() });
 
@@ -111,7 +109,7 @@ describe("Task API Handler", () => {
       updatedAt: new Date(),
     };
 
-    (createTask as any).mockResolvedValue(newTask);
+    vi.mocked(createTask).mockResolvedValue(newTask);
 
     const response = await request(server)
       .post("/api/task")
@@ -131,6 +129,38 @@ describe("Task API Handler", () => {
     });
   });
 
+  it("should update a task successfully (PUT)", async () => {
+    const updatedTask = {
+      id: testTaskId,
+      title: "Updated Task",
+      detail: "Updated task detail",
+      evaluationFactor: 4,
+      userId: testUserId,
+      status: "completed",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+  
+    vi.mocked(updateTask).mockResolvedValue(updatedTask);
+  
+    const response = await request(server).put("/api/task").send({
+      id: testTaskId,
+      title: updatedTask.title,
+      detail: updatedTask.detail,
+      evaluationFactor: updatedTask.evaluationFactor,
+      status: updatedTask.status,
+      userId: testUserId,
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("task");
+    expect(response.body.task).toEqual({
+      ...updatedTask,
+      createdAt: updatedTask.createdAt.toISOString(),
+      updatedAt: updatedTask.updatedAt.toISOString(),
+    });
+  });
+
   it("should return 400 when task ID is missing in PUT request", async () => {
     const response = await request(server).put("/api/task").send({
       title: "Updated Task",
@@ -142,6 +172,15 @@ describe("Task API Handler", () => {
 
     expect(response.body.status).toBe(400);
     expect(response.body).toHaveProperty("message", "Task ID is required for update");
+  });
+
+  it("should delete a task successfully (DELETE)", async () => {
+    vi.mocked(deleteTask).mockResolvedValue(undefined);
+  
+    const response = await request(server).delete("/api/task").query({ id: testTaskId.toString() });
+  
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty("message", "Task deleted successfully");
   });
 
   it("should return 400 when task ID is missing in DELETE request", async () => {
