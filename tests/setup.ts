@@ -6,8 +6,9 @@ config({ path: '.env.test' });
 // const env = { ...process.env, DATABASE_URL: process.env.DATABASE_URL };
 console.log('DATABASE_URL:', process.env.DATABASE_URL);
 try {
-  // データベースのリセット（強制的にマイグレーションを適用）
+  // データベースのリセット（強制的にマイグレーションを適用）環境変数を設定しても実行時に指定しなれば対象に習いケースがあり設定したコマンドになっている
   process.env.DATABASE_URL = 'postgresql://root:1234ewq1@localhost:5432/test_db?schema=public';
+  execSync('DATABASE_URL="postgresql://root:1234ewq1@localhost:5432/test_db?schema=public" npx prisma migrate reset -f --skip-seed', { stdio: 'inherit' });
 
   console.log('Resetting database...');
   execSync('DATABASE_URL="postgresql://root:1234ewq1@localhost:5432/test_db?schema=public" npx prisma migrate deploy', { stdio: 'inherit' });
