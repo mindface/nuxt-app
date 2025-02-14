@@ -1,5 +1,8 @@
 {
   "hello": "こんにちは、{name}！",
   "language": "言語",
-  "login": "ログインしました。"
+  "login": "ログインしました。",
+  "NotLogin": "ログイン情報に誤りがあります",
+  "DialogAddTaskEvaluationTitle": "タグの追加モーダル",
+  "AddTag":"タグを追加"
 }

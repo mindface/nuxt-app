@@ -59,10 +59,13 @@ export const useAuthStore = defineStore("auth", () => {
 					password: siginupInfo.password,
 				},
 			})) as { user: User; status: number; token: string };
-			if (response.status >= 200) {
+			console.log(response);
+			if (response.status === 201) {
 				setUser(response.user, response.token);
 				navigateTo({ path: "/" });
 				return { message: "success" };
+			} else if (response.status === 500) {
+				return { message: "Internal Server Error" };
 			}
 		} catch (error) {
 			console.log(error);

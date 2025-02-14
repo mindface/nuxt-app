@@ -27,6 +27,10 @@ const pathList = [
 		pathName: "task",
 	},
 	{
+		path: "/taskEvaluation",
+		pathName: "taskEvaluation",
+	},
+	{
 		path: "/view3d",
 		pathName: "view3d",
 	},

@@ -22,6 +22,7 @@ model User {
   updatedAt  DateTime @updatedAt
 
   tasks    Task[]
+  TaskEvaluations TaskEvaluation[]
 }
 
 model Task {
@@ -32,6 +33,43 @@ model Task {
   evaluationFactor Float    @default(1.0)
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
+  evaluations TaskEvaluation[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model TaskEvaluation {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  effect    String?
+  accuracy  Float    @default(1.0)
+  impact    Float    @default(1.0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tags      TaskEvaluationTag[]
+}
+
+model TaskEvaluationTag {
+  id               Int             @id @default(autoincrement())
+  taskEvaluationId Int
+  tagId            Int
+  taskEvaluation   TaskEvaluation  @relation(fields: [taskEvaluationId], references: [id], onDelete: Cascade)
+  tag             EvaluationTag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+}
+
+model EvaluationTag {
+  id       Int    @id @default(autoincrement())
+  key      String @unique
+  industry String
+  label    String
+
+  taskEvaluations TaskEvaluationTag[]
+}
+

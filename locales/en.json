@@ -1,5 +1,8 @@
 {
   "hello": "Hello, {name}!",
   "language": "Language",
-  "login": "Logged in"
+  "login": "Logged in",
+  "NotLogin": "ログイン情報に誤りがあります",
+  "DialogAddTaskEvaluationTitle": "add tag modal",
+  "AddTag":"add tag"
 }

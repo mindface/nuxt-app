@@ -7,6 +7,9 @@ export default defineNuxtConfig({
       localUrl: process.env.LOCAL_URL
     }
   },
+  experimental: {
+    viewTransition: true
+  },
 
   // devtools: { enabled: true },
   srcDir: 'src/',

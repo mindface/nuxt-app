@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from "../store/auth";
+import Dialog from "./parts/Dialog.vue";
 const { $toast, $t } = useNuxtApp();
 const authStore = useAuthStore();
 const userLoginSwitch = ref(false);
@@ -25,6 +26,8 @@ const login = async () => {
 	const res = await authStore.loginUserAction(loginInfo);
 	if (res && res.message === "success") {
 		$toast.success($t("login"));
+	} else if (res && res.message === "Internal Server Error") {
+		$toast.error($t("NotLogin"));
 	}
 };
 
@@ -38,6 +41,12 @@ const getApi = async () => {
 	});
 	console.log(response);
 };
+const rawMessage = ref("hello from parent component!");
+
+const message = computed(() => {
+	return rawMessage.value.toUpperCase();
+});
+provide("message", message);
 </script>
 
 <template>

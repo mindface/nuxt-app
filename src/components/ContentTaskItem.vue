@@ -26,7 +26,6 @@ const updateAction = () => {
 <template>
   <div class="card-item">
     <div class="inner">
-      
     </div>
   </div>
 </template>
