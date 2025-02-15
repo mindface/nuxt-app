@@ -4,5 +4,10 @@
   "login": "ログインしました。",
   "NotLogin": "ログイン情報に誤りがあります",
   "DialogAddTaskEvaluationTitle": "タグの追加モーダル",
-  "AddTag":"タグを追加"
+  "AddButton":"追加する",
+  "AddTag":"タグを追加",
+  "DialogTagList":"タグを一覧へ",
+  "DialogTagForm":"タグを追加フォームへ",
+
+  "confirmDeletion":"削除の確認"
 }

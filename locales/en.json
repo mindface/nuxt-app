@@ -2,7 +2,12 @@
   "hello": "Hello, {name}!",
   "language": "Language",
   "login": "Logged in",
-  "NotLogin": "ログイン情報に誤りがあります",
+  "NotLogin": "There is an error in your login information",
   "DialogAddTaskEvaluationTitle": "add tag modal",
-  "AddTag":"add tag"
+  "AddButton":"add do",
+  "AddTag":"add tag",
+  "DialogTagList":"List tags",
+  "DialogTagForm":"Add tag to form",
+
+  "confirmDeletion":"confirm deletion"
 }

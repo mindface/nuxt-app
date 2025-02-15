@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
 import { useTaskStore } from "../store/task";
 import type { Task } from "../types/Task";
-
-const title = ref("");
-const body = ref("");
 
 const taskStore = useTaskStore();
 

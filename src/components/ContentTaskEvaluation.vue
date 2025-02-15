@@ -3,8 +3,7 @@ import { storeToRefs } from "pinia";
 import { useAuthStore } from "../store/auth";
 import { useTaskStore } from "../store/task";
 import { useTaskEvaluationStore } from "../store/taskEvaluation";
-import DialogAddTaskEvaluation from "./DialogAddTaskEvaluation.vue";
-import { NumberController } from "three/examples/jsm/libs/lil-gui.module.min.js";
+import DialogAddTaskEvaluation from "./DialogEvaluationTag.vue";
 
 const content = ref("");
 const effect = ref("");
@@ -53,61 +52,7 @@ onMounted(async () => {
   <div>
     content task evaluation
     <DialogAddTaskEvaluation />
-    <div class="add-task-evaluation-box max-w-xs">
-      <div class="field">
-        <select v-model="taskId">
-          <option
-            v-for="item in taskList"
-            :value="item.id"
-          >{{ item.title }}</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="label block text-gray-700 text-sm font-bold mb-2">content</label>
-        <div class="p-2">
-          <textarea
-            v-model="content"
-            cols="30"
-            rows="10"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          ></textarea>
-        </div>
-        <div class="p-2">
-          <label class="label block text-gray-700 text-sm font-bold mb-2">effect</label>
-          <textarea
-            v-model="effect"
-            cols="30"
-            rows="10"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          ></textarea>
-        </div>
-        <div class="p-2">
-          <div class="mb-2">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="accuracy">
-              accuracy
-            </label>
-            <input
-              type="range"
-              v-model="accuracy"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            {{ accuracy }}
-          </div>
-          <div class="mb-2">
-            <label class="block text-gray-700 text-sm font-bold mb-2" for="impact">
-              impact
-            </label>
-            <input
-              type="range"
-              v-model="impact"
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            {{ impact }}
-          </div>
-        </div>
-        <p><button @click="addTaskAction">add</button></p>
-      </div>
-    </div>
+    <task-evaluation-edit />
     <div class="task-evaluation-list">
       <ul class="list">
         <li v-for="item in taskEvaluationList" class="item">{{ item.content }}</li>

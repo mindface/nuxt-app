@@ -3,7 +3,6 @@ import { hashPassword } from "../utils/bcrypt";
 
 export const getUserById = async (id: number) => {
 	const users = await prisma.user.findMany();
-	console.log(users);
 	return await prisma.user.findUnique({
 		where: { id },
 	});
