@@ -1,3 +1,5 @@
+import type { TaskEvaluationTag } from "./TaskEvaluationTag";
+
 export type AddTaskEvaluation = {
 	userId: number;
 	taskId: number;
@@ -5,7 +7,7 @@ export type AddTaskEvaluation = {
 	effect: string | null;
 	accuracy: number;
 	impact: number;
-	tags: string[];
+	tagIds: number[];
 };
 
 export type TaskEvaluation = {
@@ -18,5 +20,9 @@ export type TaskEvaluation = {
 	impact: number;
 	createdAt: Date;
 	updatedAt: Date;
-	tags: string[];
+	tags: TaskEvaluationTag[];
+};
+
+export type UpdateTaskEvaluation = Omit<TaskEvaluation, "tags"> & {
+	tagIds: number[];
 };

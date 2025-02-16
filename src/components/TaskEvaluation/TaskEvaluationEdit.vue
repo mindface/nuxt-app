@@ -3,85 +3,124 @@ import { storeToRefs } from "pinia";
 import { useAuthStore } from "../../store/auth";
 import { useTaskStore } from "../../store/task";
 import { useTaskEvaluationStore } from "../../store/taskEvaluation";
-import type { AddTask, Task } from "../../types/Task";
+import { useEvaluationTagStore } from "../../store/evaluationTag";
+import type {
+	TaskEvaluation,
+	UpdateTaskEvaluation,
+} from "../../types/TaskEvaluation";
+import type { EvaluationTag } from "../../types/EvaluationTag";
 
-const title = ref("");
-const detail = ref("");
-const evaluationFactor = ref(1);
-const updateItem = ref<Task>();
 const editType = ref("new");
 const editSwitch = ref(false);
+const updateItem = ref<TaskEvaluation>();
 
 const content = ref("");
 const effect = ref("");
 const accuracy = ref(0);
 const impact = ref(0);
 const taskId = ref(-1);
+const selectTags = ref<string[]>([]);
 
-const taskEvaluationStore = useTaskEvaluationStore();
 const taskStore = useTaskStore();
 const authStore = useAuthStore();
+const taskEvaluationStore = useTaskEvaluationStore();
+const evaluationTagStore = useEvaluationTagStore();
 const { taskEvaluationList } = storeToRefs(taskEvaluationStore);
-const { authUser }= storeToRefs(authStore);
+const { authUser } = storeToRefs(authStore);
 const { taskList } = storeToRefs(taskStore);
+const { tagList } = storeToRefs(evaluationTagStore);
 
 const setTaskList = () => {
-	setTimeout(() => {
-		// taskStore.getTaskList(authUser.value?.id ?? 0);
-	}, 800);
+	taskEvaluationStore.getTaskEvaluationAllList(authUser.value?.id ?? 0);
 };
 
-const addTaskAction = () => {
+const addTaskAction = async () => {
+	if (taskId.value === -1) {
+		alert("タスクを選んでください。");
+	}
 	if (authUser.value?.id) {
-		const item: AddTask = {
-			title: title.value,
-			detail: detail.value,
-			evaluationFactor: Number(evaluationFactor.value),
+		const addTaskEvaluation = {
+			content: content.value,
+			effect: effect.value,
 			userId: authUser.value?.id,
+			taskId: taskId.value,
+			accuracy: Number(accuracy.value),
+			impact: Number(impact.value),
+			tagIds: tagList.value
+				.filter((tag) => selectTags.value.includes(tag.label))
+				.map((tag) => tag.id),
 		};
-		// taskStore.addTask(item);
-		setTaskList();
+		const res = await taskEvaluationStore.addTaskEvaluation(addTaskEvaluation);
+		if (res?.message === "success") {
+			setTaskList();
+		}
 	}
 };
 
 const setTaskAction = () => {
-	title.value = "";
-	detail.value = "";
-	evaluationFactor.value = 1;
+	content.value = "";
+	effect.value = "";
 	editType.value = "new";
+	accuracy.value = 0;
+	impact.value = 0;
+	selectTags.value = [];
 };
 
 const updateTaskAction = () => {
 	if (authUser.value?.id && updateItem.value) {
-		const setUpdateItem: Task = {
+		const setUpdateItem: UpdateTaskEvaluation = {
 			...updateItem.value,
-			title: title.value,
-			detail: detail.value,
-			evaluationFactor: Number(evaluationFactor.value),
-			userId: authUser.value?.id,
+			content: content.value,
+			effect: effect.value,
+			accuracy: Number(accuracy.value),
+			impact: Number(impact.value),
+			tagIds: tagList.value
+				.filter((tag) => selectTags.value.includes(tag.label))
+				.map((tag) => tag.id),
 		};
-		// taskStore.updateTask(setUpdateItem);
+		taskEvaluationStore.updateTaskEvaluation(setUpdateItem);
 		setTaskList();
 	}
 };
 
-const setUpdateTaskAction = (task: Task) => {
-	console.log(task);
-	updateItem.value = task;
-	title.value = task.title;
-	detail.value = task.detail ?? "";
-	evaluationFactor.value = task.evaluationFactor;
+const setUpdateTaskAction = (taskEvaluation: TaskEvaluation) => {
+	updateItem.value = taskEvaluation;
+	content.value = taskEvaluation.content;
+	effect.value = taskEvaluation.effect ?? "";
+	accuracy.value = taskEvaluation.accuracy;
+	impact.value = taskEvaluation.impact;
 	editType.value = "update";
+	console.log(taskEvaluation);
+	selectTags.value = taskEvaluation.tags
+		.map((tag) => tagList.value.find((item) => item.id === tag.tagId)?.label)
+		.filter((label) => typeof label === "string");
 };
 
-onMounted(() => {
-	// taskStore.getTaskList(authUser.value?.id ?? 0);
+const selectTagAction = (evaluationTag: EvaluationTag) => {
+	if (!selectTags.value.includes(evaluationTag.label)) {
+		selectTags.value.push(evaluationTag.label);
+	} else {
+		selectTags.value = selectTags.value.filter(
+			(item) => item !== evaluationTag.label,
+		);
+	}
+};
+
+onMounted(async () => {
+	if (authUser.value?.id && taskList.value.length === 0) {
+		await taskStore.getTaskList(authUser.value?.id);
+	}
+	if (authUser.value?.id && taskEvaluationList.value.length === 0) {
+		await taskEvaluationStore.getTaskEvaluationAllList(authUser.value?.id);
+	}
+	evaluationTagStore.getEvaluationTagList();
 });
 </script>
 
 <template>
   <div>
-    <div :class="editSwitch ? 
+    <div
+      :class="editSwitch ? 
         'add-task-box max-w-xs max-h-[calc(100vh-56px)] fixed overflow-y-auto bottom-0 right-0 p-2 bg-white shadow z-10' :
         'add-task-box max-w-xs max-h-[calc(100vh-56px)] fixed overflow-y-auto bottom-0 left-0 p-2 bg-white shadow z-10'
       ">
@@ -152,11 +191,23 @@ onMounted(() => {
                 {{ impact }}
               </div>
             </div>
-            <p><button @click="addTaskAction">add</button></p>
+            <div class="p-2">
+              <div class="select-tag">
+                <span
+                  class="inline-block mr-2 p-2 border"
+                  v-for="item in tagList"
+                  @click="selectTagAction(item)"
+                >{{ item.label }}</span>
+              </div>
+              <div class="selected-tag">
+                <div class="pt-4 pb-4">{{ $t("selectedTag") }}</div>
+                <span class="inline-block mr-2 p-2 border" v-for="item in selectTags">{{ item }}</span>
+              </div>
+            </div>
           </div>
         </div>
         <p v-if="editType === 'new'">
-          <button 
+          <button
             class="bg-sky-300 font-semibold text-white py-2 px-4 rounded"
             @click="addTaskAction"
           >add</button>
@@ -175,11 +226,10 @@ onMounted(() => {
         :key="item.id"
         class="item mb-2 mr-2 p-1 max-w-xs w-full shadow sticky"
       >
-       <!-- <content-task-card
-         :item="item"
-         @updateAction="setUpdateTaskAction(item)"
-         @setAction="setTaskList()"
-       /> -->
+        <task-evaluation-card
+          :item="item"
+          @updateAction="setUpdateTaskAction(item)"
+        />
       </div>
     </div>
   </div>

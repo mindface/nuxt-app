@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type {
 	AddTaskEvaluation,
+	UpdateTaskEvaluation,
 	TaskEvaluation,
 } from "../types/TaskEvaluation";
 import type { TaskEvaluationResponse } from "../types/ApiRespose";
@@ -22,6 +23,7 @@ export const useTaskEvaluationStore = defineStore("TaskEvaluation", () => {
 				},
 			);
 			if (data) {
+				console.log(data);
 				taskEvaluationList.value = data.taskEvaluation ?? [];
 			}
 		} catch (error) {
@@ -47,35 +49,41 @@ export const useTaskEvaluationStore = defineStore("TaskEvaluation", () => {
 	}
 	async function addTaskEvaluation(addTaskEvaluation: AddTaskEvaluation) {
 		try {
-			const data = await $fetch<TaskEvaluationResponse>("/api/taskEvaluation", {
-				method: "POST",
-				headers: headers,
-				body: JSON.stringify(addTaskEvaluation),
-			});
-			console.log(data);
+			const data = await $fetch<TaskEvaluationResponse>(
+				"/api/taskEvaluation?selectTags=${selectTags}",
+				{
+					method: "POST",
+					headers: headers,
+					body: JSON.stringify(addTaskEvaluation),
+				},
+			);
+			return { message: "success" };
 		} catch (error) {
 			console.error(`error`, error);
 		}
 	}
-	async function updateTaskEvaluation(task: TaskEvaluation) {
+	async function updateTaskEvaluation(taskEvaluation: UpdateTaskEvaluation) {
 		try {
 			const data = await $fetch<TaskEvaluationResponse>("/api/taskEvaluation", {
 				method: "PUT",
 				headers: headers,
-				body: JSON.stringify(task),
+				body: JSON.stringify(taskEvaluation),
 			});
+			console.log(data);
+			return { message: "success" };
 		} catch (error) {
 			console.error(`error`, error);
 		}
 	}
-	async function deleteTaskEvaluation(task: TaskEvaluation) {
+	async function deleteTaskEvaluation(taskEvaluation: TaskEvaluation) {
 		try {
 			const data = await useFetch<TaskEvaluationResponse>(
-				`/api/taskEvaluation/${task.id}`,
+				`/api/taskEvaluation/${taskEvaluation.id}`,
 				{
 					method: "DELETE",
 				},
 			);
+			return { message: "success" };
 		} catch (error) {
 			console.error(`error`, error);
 		}

@@ -10,6 +10,7 @@ class TaskEvaluationsService {
 		impact?: number;
 		tagIds?: number[];
 	}) {
+		console.log(data);
 		try {
 			const taskEvaluation = await prisma.taskEvaluation.create({
 				data: {
@@ -44,6 +45,13 @@ class TaskEvaluationsService {
 			const evaluations = await prisma.taskEvaluation.findMany({
 				where: {
 					userId: userId,
+				},
+				include: {
+					tags: {
+						include: {
+							tag: true,
+						},
+					},
 				},
 			});
 			return evaluations;
@@ -107,6 +115,7 @@ class TaskEvaluationsService {
 			tagIds?: number[];
 		},
 	) {
+		console.log(data);
 		try {
 			const updatedEvaluation = await prisma.taskEvaluation.update({
 				where: { id },

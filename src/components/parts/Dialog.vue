@@ -65,14 +65,6 @@ const hideDialog = () => {
   opacity: 0;
   transform: translateY(-10px);
 } */
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 1.5s ease;
-}
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
 dialog[open] {
   opacity: 1;
   transform: scaleY(1);

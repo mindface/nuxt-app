@@ -25,7 +25,6 @@ const setUpdateTaskAction = () => {
 const deleteTaskAction = (taskEvaluation: TaskEvaluation) => {
 	if (confirm("この操作は取り消せません。削除しますか？")) {
 		taskEvaluationStore.deleteTaskEvaluation(taskEvaluation);
-		emit("setAction");
 	}
 };
 

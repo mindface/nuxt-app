@@ -9,5 +9,6 @@
   "DialogTagList":"List tags",
   "DialogTagForm":"Add tag to form",
 
-  "confirmDeletion":"confirm deletion"
+  "confirmDeletion":"confirm deletion",
+  "selectedTag":"selected tag"
 }

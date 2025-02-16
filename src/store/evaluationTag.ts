@@ -11,13 +11,10 @@ export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 
 	async function getEvaluationTagList() {
 		try {
-			const data = await $fetch<EvaluationTagResponse>(
-				"/api/evaluationTag",
-				{
-					method: "GET",
-					headers: headers,
-				},
-			);
+			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
+				method: "GET",
+				headers: headers,
+			});
 			if (data) {
 				tagList.value = data.tags ?? [];
 			}

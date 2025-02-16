@@ -29,24 +29,24 @@ const postDataAction = async () => {
 };
 
 const submitActcion = (event: Event) => {
-  event.preventDefault();
-  const addEvaluationTag = {
-    key: key.value,
+	event.preventDefault();
+	const addEvaluationTag = {
+		key: key.value,
 		label: label.value,
 		industry: industry.value,
 	};
-  console.log(addEvaluationTag);
-  // evaluationTagStore.addEvaluationTag(addEvaluationTag);
+	console.log(addEvaluationTag);
+	// evaluationTagStore.addEvaluationTag(addEvaluationTag);
 };
 
 const deleteTagAction = (tagId: number) => {
-  if(confirm(confirmDeletion)) {
-  	evaluationTagStore.deleteEvaluationTag(tagId);
-  }
-}
+	if (confirm(confirmDeletion)) {
+		evaluationTagStore.deleteEvaluationTag(tagId);
+	}
+};
 const changePanelAction = () => {
-  editSwitch.value = !editSwitch.value;
-}
+	editSwitch.value = !editSwitch.value;
+};
 
 onMounted(async () => {
 	evaluationTagStore.getEvaluationTagList();

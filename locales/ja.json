@@ -9,5 +9,6 @@
   "DialogTagList":"タグを一覧へ",
   "DialogTagForm":"タグを追加フォームへ",
 
-  "confirmDeletion":"削除の確認"
+  "confirmDeletion":"削除の確認",
+  "selectedTag":"選択したタグ"
 }
