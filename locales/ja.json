@@ -10,5 +10,6 @@
   "DialogTagForm":"タグを追加フォームへ",
 
   "confirmDeletion":"削除の確認",
-  "selectedTag":"選択したタグ"
+  "selectedTag":"選択したタグ",
+  "searchAction":"検索する"
 }

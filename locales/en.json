@@ -10,5 +10,6 @@
   "DialogTagForm":"Add tag to form",
 
   "confirmDeletion":"confirm deletion",
-  "selectedTag":"selected tag"
+  "selectedTag":"selected tag",
+  "searchAction":"search action"
 }

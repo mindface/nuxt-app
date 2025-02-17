@@ -10,7 +10,6 @@ class TaskEvaluationsService {
 		impact?: number;
 		tagIds?: number[];
 	}) {
-		console.log(data);
 		try {
 			const taskEvaluation = await prisma.taskEvaluation.create({
 				data: {
@@ -115,7 +114,6 @@ class TaskEvaluationsService {
 			tagIds?: number[];
 		},
 	) {
-		console.log(data);
 		try {
 			const updatedEvaluation = await prisma.taskEvaluation.update({
 				where: { id },

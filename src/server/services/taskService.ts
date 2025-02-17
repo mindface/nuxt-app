@@ -1,5 +1,15 @@
 import prisma from "../utils/prisma";
 
+export const searchTasks = async (userId: number, title: string) => {
+	console.log(title);
+	return await prisma.task.findMany({
+		where: {
+			userId,
+			title: title !== "" ? { contains: title, mode: "insensitive" } : {},
+		},
+	});
+};
+
 export const getTasks = async (userId: number, taskId?: number) => {
 	return taskId
 		? await prisma.task.findUnique({

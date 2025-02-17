@@ -3,7 +3,9 @@ import { storeToRefs } from "pinia";
 import { useAuthStore } from "../store/auth";
 import { useTaskStore } from "../store/task";
 import type { AddTask, Task } from "../types/Task";
+
 import PartsTaskForm from "./PartsTaskForm.vue";
+import BlockSearch from "./BlockSearch.vue";
 
 const title = ref("");
 const detail = ref("");
@@ -70,12 +72,15 @@ const updateTaskAction = () => {
 };
 
 const setUpdateTaskAction = (task: Task) => {
-	console.log(task);
 	updateItem.value = task;
 	title.value = task.title;
 	detail.value = task.detail ?? "";
 	evaluationFactor.value = task.evaluationFactor;
 	editType.value = "update";
+};
+
+const searchAction = (tasks: Task[]) => {
+	taskStore.setTasks(tasks);
 };
 
 onMounted(() => {
@@ -131,6 +136,9 @@ onMounted(() => {
           >update</button>
         </p>
       </div>
+    </div>
+    <div class="task-search-box p-4">
+      <block-search type="task" />
     </div>
     <div class="task-box flex flex-wrap p-2">
       <div
