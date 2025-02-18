@@ -26,11 +26,11 @@ class TaskEvaluationsService {
 							})) || [],
 					},
 				},
-				include: {
-					task: true,
-					user: true,
-					tags: true,
-				},
+				// include: {
+				// 	task: true,
+				// 	user: true,
+				// 	tags: true,
+				// },
 			});
 
 			return taskEvaluation;
@@ -139,7 +139,8 @@ class TaskEvaluationsService {
 
 			return updatedEvaluation;
 		} catch (error) {
-			throw new Error(`Error updating Task Evaluation: ${error}`);
+			console.error(error);
+			throw new Error("TaskEvaluation ID is required for update");
 		}
 	}
 
@@ -149,9 +150,9 @@ class TaskEvaluationsService {
 			const deletedEvaluation = await prisma.taskEvaluation.delete({
 				where: { id },
 			});
-
-			return deletedEvaluation;
+			return { status: 200, message: "TaskEvaluation deleted successfully" };
 		} catch (error) {
+			console.error(error);
 			throw new Error(`Error deleting Task Evaluation: ${error}`);
 		}
 	}

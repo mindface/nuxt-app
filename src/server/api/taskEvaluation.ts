@@ -18,9 +18,9 @@ export default defineEventHandler(async (event) => {
 			}
 
 			if (taskId) {
-				const TaskEvaluation =
+				const taskEvaluation =
 					await TaskEvaluationsService.getTaskEvaluationById(taskId);
-				return taskId ? TaskEvaluation : { status: 200, TaskEvaluation };
+				return { status: 200, taskEvaluation };
 			}
 			return { status: 400, message: "TaskEvaluation IDs is required" };
 		}

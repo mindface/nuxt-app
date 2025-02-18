@@ -38,7 +38,7 @@ describe("Task API Handler", () => {
     const user = await prisma.user.create({
       data: {
         name: "Test User",
-        email: "test@example.com",
+        email: "testtask@example.com",
         password: "hashedpassword",
         detail: "Test user details",
         status: "active",
