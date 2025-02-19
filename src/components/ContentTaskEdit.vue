@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "../store/auth";
 import { useTaskStore } from "../store/task";
+import { useApi } from "../composables/useApi";
 import type { AddTask, Task } from "../types/Task";
 
 import PartsTaskForm from "./PartsTaskForm.vue";
@@ -18,6 +19,13 @@ const taskStore = useTaskStore();
 const authStore = useAuthStore();
 const { taskList } = storeToRefs(taskStore);
 const { authUser } = storeToRefs(authStore);
+
+const { data, pending, refresh, error } = useApi<{
+	status: number;
+	tasks: Task[];
+}>(`/api/task?userId=${authUser.value?.id}`);
+
+const tasks = computed(() => data.value?.tasks);
 
 // 今後使う予定
 const props = defineProps({
@@ -57,7 +65,7 @@ const setTaskAction = () => {
 	editType.value = "new";
 };
 
-const updateTaskAction = () => {
+const updateTaskAction = async () => {
 	if (authUser.value?.id && updateItem.value) {
 		const setUpdateItem: Task = {
 			...updateItem.value,
@@ -66,8 +74,9 @@ const updateTaskAction = () => {
 			evaluationFactor: Number(evaluationFactor.value),
 			userId: authUser.value?.id,
 		};
-		taskStore.updateTask(setUpdateItem);
+		await taskStore.updateTask(setUpdateItem);
 		setTaskList();
+		refresh();
 	}
 };
 
@@ -83,9 +92,9 @@ const searchAction = (tasks: Task[]) => {
 	taskStore.setTasks(tasks);
 };
 
-onMounted(() => {
-	taskStore.getTaskList(authUser.value?.id ?? 0);
-});
+// onMounted(() => {
+// 	taskStore.getTaskList(authUser.value?.id ?? 0);
+// });
 </script>
 
 <template>
@@ -142,7 +151,11 @@ onMounted(() => {
     </div>
     <div class="task-box flex flex-wrap p-2">
       <div
-        v-for="item in taskList"
+        v-if="error"
+      >error</div>
+      <div
+        v-else
+        v-for="item in tasks"
         :key="item.id"
         class="item mb-2 mr-2 p-1 max-w-xs w-full shadow sticky"
       >
