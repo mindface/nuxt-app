@@ -5,6 +5,8 @@ import TaskEvaluationsService from "../../src/server/services/taskEvaluationsSer
 import taskEvaluationHandler from "../../src/server/api/taskEvaluation";
 import { createApp, toNodeListener } from 'h3';
 
+import type { TaskEvaluation } from "../../src/types/TaskEvaluation";
+
 const prisma = new PrismaClient();
 
 const app = createApp();
@@ -35,44 +37,116 @@ describe("Task API Handler", () => {
   let testUserId: number;
   let testTaskId: number;
   let testTaskEvaluationId: number;
+  let testTaskEvaluation: any;
 
   beforeAll(async () => {
-    const user = await prisma.user.create({
-      data: {
-        name: "Test User",
-        email: "test@example.com",
-        password: "hashedpassword",
-        detail: "Test user details",
-        status: "active",
-        role: "user",
-        isActive: true,
-        lastLogin: new Date(),
-      },
+    // const user = await prisma.user.create({
+    //   data: {
+    //     name: "Test User",
+    //     email: "test@example.com",
+    //     password: "hashedpassword",
+    //     detail: "Test user details",
+    //     status: "active",
+    //     role: "user",
+    //     isActive: true,
+    //     lastLogin: new Date(),
+    //   },
+    // });
+    // testUserId = user.id;
+
+    // const task = await prisma.task.create({
+    //   data: {
+    //     title: "Test Task",
+    //     detail: "Task detail",
+    //     evaluationFactor: 10,
+    //     userId: testUserId,
+    //     status: "run",
+    //   },
+    // });
+    // testTaskId = task.id;
+
+    // const taskEvaluation = await prisma.taskEvaluation.create({
+    //   data: {
+    //     taskId: task.id,
+    //     userId: user.id,
+    //     content: "content",
+    //     effect: "effect",
+    //     accuracy: 5,
+    //     impact: 5,
+    //   },
+    // });
+    // testTaskEvaluationId = taskEvaluation.id;
+    // await expect(
+    //   prisma.$transaction(async (prisma) => {
+    //     const user = await prisma.user.create({
+    //       data: {
+    //         name: "Rollback Test",
+    //         email: "rollback@example.com",
+    //         password: "hashedpassword",
+    //         detail: "Should rollback",
+    //         status: "active",
+    //         role: "user",
+    //         isActive: true,
+    //         lastLogin: new Date(),
+    //       },
+    //     });
+  
+    //     await prisma.task.create({
+    //       data: {
+    //         title: "Rollback Task",
+    //         detail: "This task should not exist after rollback",
+    //         evaluationFactor: 10,
+    //         user: { connect: { id: user.id } },
+    //         status: "run",
+    //       },
+    //     });
+  
+    //     throw new Error("Intentional rollback error"); // ここでエラー発生
+    //   })
+    // ).rejects.toThrow("Intentional rollback error");
+    
+    const [user, task, taskEvaluation] = await prisma.$transaction(async (pt) => {
+      const user = await pt.user.create({
+        data: {
+          name: "Test User",
+          email: "test@example.com",
+          password: "hashedpassword",
+          detail: "Test user details",
+          status: "active",
+          role: "user",
+          isActive: true,
+          lastLogin: new Date(),
+        },
+      });
+  
+      const task = await pt.task.create({
+        data: {
+          title: "Test Task",
+          detail: "Task detail",
+          evaluationFactor: 10,
+          user: { connect: { id: user.id } },
+          status: "run",
+        },
+      });
+  
+      const taskEvaluation = await pt.taskEvaluation.create({
+        data: {
+          user: { connect: { id: user.id } },
+          task: { connect: { id: task.id } },
+          content: "content",
+          effect: "effect",
+          accuracy: 5,
+          impact: 5,
+        },
+      });
+  
+      return [user, task, taskEvaluation];
     });
+
     testUserId = user.id;
-
-    const task = await prisma.task.create({
-      data: {
-        title: "Test Task",
-        detail: "Task detail",
-        evaluationFactor: 10,
-        userId: testUserId,
-        status: "run",
-      },
-    });
     testTaskId = task.id;
-
-    const taskEvaluation = await prisma.taskEvaluation.create({
-      data: {
-        taskId: testTaskId,
-        userId: testUserId,
-        content: "content",
-        effect: "effect",
-        accuracy: 5,
-        impact: 5,
-      },
-    });
     testTaskEvaluationId = taskEvaluation.id;
+
   });
 
   afterAll(async () => {
@@ -377,22 +451,10 @@ describe("Task API Handler", () => {
       data: { key: "test_key", industry: "IT", label: "Test Label" },
     });
   
-    // TaskEvaluation の作成
-    const taskEvaluation = await prisma.taskEvaluation.create({
-      data: { 
-        taskId: testTaskId,
-        userId: testUserId,
-        content: "Test content",
-        effect: "Test effect",
-        accuracy: 0.8,
-        impact: 1.2,
-      },
-    });
-  
     // TaskEvaluationTag の作成（リレーションを作る）
     await prisma.taskEvaluationTag.create({
       data: {
-        taskEvaluationId: taskEvaluation.id,
+        taskEvaluationId: testTaskEvaluationId,
         tagId: tag.id,
       },
     });
