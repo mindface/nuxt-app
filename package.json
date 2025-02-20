@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@nuxt/devtools": "latest",
+    "@nuxt/devtools": "^2.1.0",
     "@types/bcryptjs": "^2",
     "@types/jsonwebtoken": "^9",
     "@types/node": "^22.13.1",
@@ -48,6 +48,8 @@
     "nuxt": "^3.15.4",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.2.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
     "prisma": "^6.3.1",
     "supertest": "^7.0.0",
     "three": "^0.158.0",
