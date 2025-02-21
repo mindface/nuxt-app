@@ -66,15 +66,17 @@ watch(
       </label>
       <input
         type="text"
+        name="title"
         v-model="title"
         @keyup="(v:Event) => changeTitleAction(v)"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        class="title shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         placeholder="title"
       />
     </div>
     <div class="pb-2">
       <textarea
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        class="textarea shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        name="detail"
         v-model="body"
         cols="30"
         rows="10"
@@ -85,7 +87,8 @@ watch(
     <div class="pb-2">
       <input
         type="range"
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        name="evaluationFactor"
+        class="evaluationFactor shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         v-model="evaluationFactor"
         min="0"
         max="100"

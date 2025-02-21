@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
 
 		if (method === "POST") {
 			const body = await readBody(event);
+			console.log(body);
 			if (!body.userId) return { status: 400, message: "User ID is required" };
 
 			const newTask = await createTask(body);

@@ -12,11 +12,13 @@
     "fmt": "biome format ./src",
     "lint:fix": "biome lint --apply ./src",
     "prepare": "husky",
-    "test": "env $(cat .env.test | xargs) vitest"
+    "test": "env $(cat .env.test | xargs) vitest",
+    "test:e2e": "DATABASE_URL='postgresql://root:1234ewq1@localhost:5432/test_db?schema=public' playwright test"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@nuxt/devtools": "^2.1.0",
+    "@playwright/test": "^1.50.1",
     "@types/bcryptjs": "^2",
     "@types/jsonwebtoken": "^9",
     "@types/node": "^22.13.1",

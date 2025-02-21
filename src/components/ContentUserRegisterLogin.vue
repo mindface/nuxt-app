@@ -34,13 +34,6 @@ const login = async () => {
 const signup = async () => {
 	authStore.signupUserAction(siginupInfo);
 };
-// テスト用
-const getApi = async () => {
-	const response = await $fetch("/api/user", {
-		method: "GET",
-	});
-	console.log(response);
-};
 const rawMessage = ref("hello from parent component!");
 
 const message = computed(() => {
@@ -52,20 +45,19 @@ provide("message", message);
 <template>
   <div>
     <div class="info-from">
-      <button class="btn" @click="loginSwitchAction">{{ userLoginSwitch ? "login pageに変更" : "singnup pageに変更" }}</button>
+      <button class="btn switcher" @click="loginSwitchAction">{{ userLoginSwitch ? "login pageに変更" : "singnup pageに変更" }}</button>
     </div>
-    <div v-if="!userLoginSwitch" class="signup-from">
-      <p>email : <input type="text" v-model="loginInfo.email"></p>
-      <p>password : <input type="text" v-model="loginInfo.password"></p>
+    <div v-if="!userLoginSwitch" class="login-from">
+      <p>email : <input type="text" class="input email" v-model="loginInfo.email"></p>
+      <p>password : <input type="text" class="input password" v-model="loginInfo.password"></p>
       <button @click="login">singnup</button>
     </div>
-    <div v-if="userLoginSwitch" class="login-from">
-      <p>name : <input type="text" v-model="siginupInfo.name"></p>
-      <p>email : <input type="text" v-model="siginupInfo.email"></p>
-      <p>password : <input type="text" v-model="siginupInfo.password"></p>
-      <p>detail : <input type="text" v-model="siginupInfo.detail"></p>
+    <div v-if="userLoginSwitch" class="signup-from">
+      <p>name : <input type="text" class="input name" v-model="siginupInfo.name"></p>
+      <p>email : <input type="text" class="input email" v-model="siginupInfo.email"></p>
+      <p>password : <input type="text" class="input password" v-model="siginupInfo.password"></p>
+      <p>detail : <input type="text" class="input detail" v-model="siginupInfo.detail"></p>
       <button @click="signup">login</button>
     </div>
-    <button @click="getApi">getApi</button>
   </div>
 </template>

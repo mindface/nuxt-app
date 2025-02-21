@@ -48,7 +48,7 @@ async function main() {
 
     // タスクを5つ作成
     await prisma.task.createMany({
-      data: Array.from({ length: 5 }).map((_, index) => ({
+      data: Array.from({ length: 2 }).map((_, index) => ({
         title: `Task ${index + 1} for User${i}`,
         status: "pending",
         detail: `Detail for Task ${index + 1} of User${i}`,
