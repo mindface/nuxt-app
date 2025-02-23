@@ -23,6 +23,7 @@ model User {
 
   tasks    Task[]
   TaskEvaluations TaskEvaluation[]
+  images Image[]
 }
 
 model Task {
@@ -73,3 +74,16 @@ model EvaluationTag {
   taskEvaluations TaskEvaluationTag[]
 }
 
+model Image {
+  id              Int      @id @default(autoincrement())
+  typekey         String
+  path            String
+  altText         String
+  caption         String
+  evaluationFactor Float
+  status          String
+  userId          Int
+  user            User     @relation(fields: [userId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

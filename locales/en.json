@@ -5,11 +5,25 @@
   "NotLogin": "There is an error in your login information",
   "DialogAddTaskEvaluationTitle": "add tag modal",
   "AddButton":"add do",
+  "update": "update",
+  "detail": "詳細",
   "AddTag":"add tag",
   "DialogTagList":"List tags",
   "DialogTagForm":"Add tag to form",
 
   "confirmDeletion":"confirm deletion",
   "selectedTag":"selected tag",
-  "searchAction":"search action"
+  "searchAction":"search action",
+
+  "imageList":"image list",
+  "imageUpload":"image upload",
+  "noImageId": "no image id",
+
+  
+  "imageUploadSuccess": "image upload success",
+  "imageUploadError": "image upload error",
+  "imageUpdateSuccess": "image Update success",
+  "imageUpdateError": "image Update error",
+  "imageActionError": "image action error"
+
 }

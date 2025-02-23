@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BaseHeader from "../components/BaseHeader.vue";
+import BaseFooter from "../components/BaseFooter.vue";
 const router = useRouter();
 
 onMounted(() => {
@@ -24,5 +25,6 @@ onMounted(() => {
     <main class="p-2">
       <slot />
     </main>
+		<BaseFooter />
   </div>
 </template>

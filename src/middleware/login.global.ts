@@ -22,6 +22,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 		if (to.path === "/login") {
 			return;
 		}
+		authStore.logoutAuth();
 		return navigateTo("/login");
 	}
 

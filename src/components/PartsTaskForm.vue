@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref, watch } from "vue";
+
 const props = defineProps({
 	title: {
 		type: String,
@@ -13,6 +15,7 @@ const props = defineProps({
 		default: 0,
 	},
 });
+
 const emit = defineEmits([
 	"changeTitleAction",
 	"changeBodyAction",

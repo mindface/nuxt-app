@@ -1,5 +1,5 @@
-import pino from "pino";
 import { join } from "path";
+import pino from "pino";
 
 const logFilePath = join(process.cwd(), "logs/server.log");
 const logStream = pino.destination(logFilePath);
@@ -26,11 +26,3 @@ export const logger = pino({
 		],
 	},
 });
-
-// export default defineNuxtPlugin(() => {
-//   return {
-//     provide: {
-//       logger
-//     }
-//   };
-// });

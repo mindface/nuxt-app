@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
+import { ref } from "vue";
 
 const te = ref(false);
 const { upstring, uparr } = defineProps(["upstring", "uparr"]);

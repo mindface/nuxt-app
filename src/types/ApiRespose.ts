@@ -2,6 +2,7 @@ import type { User } from "./User";
 import type { Task } from "./Task";
 import type { TaskEvaluation } from "./TaskEvaluation";
 import type { EvaluationTag } from "./EvaluationTag";
+import type { Imager } from "./Imager";
 
 export type TaskResponse = {
 	status: number;
@@ -26,4 +27,15 @@ export type EvaluationTagResponse = {
 export type UserResponse = {
 	status: number;
 	user: User;
+};
+
+export type ImagerResponse = {
+	status: number;
+	images: Imager[];
+};
+
+export type ImagerCreateResponse = {
+	status: number;
+	path: string;
+	image: Imager;
 };

@@ -10,12 +10,12 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true
   },
-
   // devtools: { enabled: true },
   srcDir: 'src/',
 
   modules: [
     '@pinia/nuxt',
+    '@nuxt/image',
     // '@nuxtjs/i18n',
   ],
 
@@ -34,6 +34,20 @@ export default defineNuxtConfig({
         usePolling: true,
       },
     },
+  },
+
+  vue: {
+    compilerOptions: {
+      isCustomElement: tag => tag.startsWith('custom-')
+    }
+  },
+
+  imports: {
+    autoImport: true,
+    dirs: [
+      "src/**",
+      "clients",
+    ],
   },
 
   compatibilityDate: '2025-02-06',
