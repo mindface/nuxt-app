@@ -28,7 +28,6 @@ const hideDialog = () => {
 <template>
   <div>
     <button @click="openDialogAction">{{ props.label }}</button>
-    <teleport to="body">
       <Transition name="bounce" mode="out-in" @after-leave="hideDialog">
         <dialog ref="dialogRef" class="dialog max-w-[80vw] w-[80vw]">
           <div class="p-4">
@@ -45,7 +44,6 @@ const hideDialog = () => {
           </div>
         </dialog>
       </Transition>
-    </teleport>
   </div>
 </template>
 
@@ -70,6 +68,9 @@ dialog[open] {
   transform: scaleY(1);
 }
 dialog {
+  position: fixed;
+  z-index: 1;
+  isolation: isolate;
   opacity: 0;
   transform: scaleY(0);
   transition:

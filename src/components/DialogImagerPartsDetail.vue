@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import Dialog from "./parts/Dialog.vue";
-import { useImagerStore } from "../store/imager";
-import { useAuthStore } from "../store/auth";
 import { useNuxtApp } from "nuxt/app";
-import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { ref, watch, type PropType } from "vue";
+import { useAuthStore } from "../store/auth";
+import { useImagerStore } from "../store/imager";
+import type { Imager } from "../types/Imager";
 
 type Item = {
 	altText: string;
@@ -14,11 +14,11 @@ type Item = {
 	userId: number;
 };
 
-const { $t } = useNuxtApp();
+const { $toast, $t } = useNuxtApp();
 
 const props = defineProps({
 	item: {
-		type: Object as PropType<Item>,
+		type: Object as PropType<Imager>,
 	},
 });
 
@@ -28,14 +28,16 @@ const { imagerLinst } = storeToRefs(imagerStore);
 const { authUser } = storeToRefs(authStore);
 
 const fromSwicher = ref(false);
-const snedForm = ref<HTMLFormElement>(null);
+const snedForm = ref<HTMLFormElement>();
 const selectedFile = ref<File | null>(null);
-const previewUrl = ref<string | null>("");
 
-// update処理に使う予定
+const VModelAltText = ref(props.item?.altText ?? "");
+const VModelCaption = ref(props.item?.caption ?? "");
+const VModelEvaluationFactor = ref(props.item?.evaluationFactor ?? 0);
+
 const setDataAction = () => {
-	snedForm.value = new snedForm();
-	// snedForm.value.append("altText", data.altText || "");
+	console.log(props.item?.altText);
+	// snedForm.value.append("altText", props.item.altText ?? "default value");
 	// snedForm.value.append("caption", data.caption || "");
 	// snedForm.value.append("evaluationFactor", String(data.evaluationFactor || "0"));
 	// snedForm.value.append("status", data.status || "active");
@@ -44,19 +46,52 @@ const setDataAction = () => {
 
 const imageSwicherAction = () => {
 	fromSwicher.value = !fromSwicher.value;
+	if (fromSwicher.value) {
+		setDataAction();
+	}
 };
 
-const updateImage = () => {};
+const updateImage = async (e: Event) => {
+	e.preventDefault();
+	const formData = new FormData(snedForm.value);
+	if (props.item?.id && props.item?.userId) {
+		formData.append("imageId", String(props.item?.id));
+		formData.append("typekey", props.item?.typekey ?? "default value");
+		formData.append("altText", props.item?.altText ?? "default value");
+		formData.append("status", props.item?.status || "active");
+		formData.append("userId", String(props.item?.userId));
+		try {
+			const res = await imagerStore.updateImagerPathAction(formData);
+			if (res?.status === 200) {
+				$toast.success("imageUpdateSuccess");
+			} else {
+				$toast.error("imageUpdateError");
+			}
+		} catch (error) {
+			console.error("アップロードエラー:", error);
+			$toast.success("imageActionError");
+		}
+	}
+};
+
+watch(
+	() => props.item,
+	() => {
+		console.log("---");
+		setDataAction();
+	},
+	{ deep: true },
+);
 </script>
 
 <template>
   <div>
-			<div class="DIalog-imager-parts-detail relative">
+			<div class="dialog-imager-parts-detail relative">
         <button @click="imageSwicherAction()">{{ $t("detail") }}</button>
         <Transition name="fade">
           <div
             v-if="fromSwicher"
-            class="image-uploader__upload-area absolute left-0 bottom-0 p-4 bg-white "
+            class="image-uploader__upload-area absolute left-0 bottom-0 p-4 bg-white h-[100%]"
           >
             <form
               class="form"
@@ -66,17 +101,17 @@ const updateImage = () => {};
               <div class="upload-btn">
                 <p class="pb-4">
                   <label class="label inline-block">altText</label>
-                  <input type="text" name="altText" class="input">
+                  <input type="text" name="altText" class="input" v-model="VModelAltText">
                 </p>
                 <p class="pb-4">
                   <label class="label inline-block">caption</label>
-                  <input type="text" name="caption" class="input">
+                  <input type="text" name="caption" class="input" v-model="VModelCaption">
                 </p>
                 <p class="pb-4">
-                  <label class="label inline-block">status</label>
-                  <input type="text" name="status" class="input">
+                  <label class="label inline-block">evaluationFactor</label>
+                  <input type="range" name="evaluationFactor" class="input" v-model="VModelEvaluationFactor">
                 </p>
-                <button type="submit" :disabled="!selectedFile" class="mt-2 bg-blue-500 text-white p-2 rounded">
+                <button type="submit" class="mt-2 bg-blue-500 text-white p-2 rounded">
                   {{ $t("update") }}
                 </button>
               </div>

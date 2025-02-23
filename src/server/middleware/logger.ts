@@ -1,10 +1,10 @@
 import {
 	defineEventHandler,
-	getRequestURL,
 	getRequestHeaders,
+	getRequestURL,
 	H3Event,
 } from "h3";
-import { logger } from "../../plugins/logger";
+import { logger } from "../../lib/logger";
 
 export default defineEventHandler(async (event: H3Event) => {
 	const start = Date.now();

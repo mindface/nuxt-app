@@ -19,6 +19,7 @@
     "@biomejs/biome": "1.9.4",
     "@nuxt/devtools": "^2.1.0",
     "@nuxt/image": "^1.9.0",
+    "@nuxt/typescript-build": "^3.0.2",
     "@playwright/test": "^1.50.1",
     "@types/bcryptjs": "^2",
     "@types/jsonwebtoken": "^9",

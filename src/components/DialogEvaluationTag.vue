@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import Dialog from "./parts/Dialog.vue";
-import { useEvaluationTagStore } from "../store/evaluationTag";
+import { useNuxtApp } from "nuxt/app";
 import { storeToRefs } from "pinia";
+import { onMounted, ref } from "vue";
+import { useEvaluationTagStore } from "../store/evaluationTag";
+import Dialog from "./parts/Dialog.vue";
 const { $t } = useNuxtApp();
 const evaluationTagStore = useEvaluationTagStore();
 const { tagList } = storeToRefs(evaluationTagStore);

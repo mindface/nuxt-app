@@ -16,5 +16,14 @@
   "searchAction":"search action",
 
   "imageList":"image list",
-  "imageUpload":"image upload"
+  "imageUpload":"image upload",
+  "noImageId": "no image id",
+
+  
+  "imageUploadSuccess": "image upload success",
+  "imageUploadError": "image upload error",
+  "imageUpdateSuccess": "image Update success",
+  "imageUpdateError": "image Update error",
+  "imageActionError": "image action error"
+
 }

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useImagerStore } from "../store/imager";
-import { useAuthStore } from "../store/auth";
 import { useNuxtApp } from "nuxt/app";
-
+import { storeToRefs } from "pinia";
+import { ref } from "vue";
+import { useAuthStore } from "../store/auth";
+import { useImagerStore } from "../store/imager";
 import Dialog from "./parts/Dialog.vue";
 // import DialogImagerPartsDetail from "./DialogImagerPartsDetail.vue";
 
-const { $t } = useNuxtApp();
+const { $toast, $t } = useNuxtApp();
 
 const imagerStore = useImagerStore();
 const authStore = useAuthStore();
@@ -15,19 +15,9 @@ const { imagerLinst } = storeToRefs(imagerStore);
 const { authUser } = storeToRefs(authStore);
 
 const imageSwicher = ref(false);
-const snedForm = ref<HTMLFormElement>(null);
+const snedForm = ref<HTMLFormElement | null>(null);
 const selectedFile = ref<File | null>(null);
 const previewUrl = ref<string | null>("");
-
-// update処理に使う予定
-const setDataAction = () => {
-	snedForm.value = new snedForm();
-	// snedForm.value.append("altText", data.altText || "");
-	// snedForm.value.append("caption", data.caption || "");
-	// snedForm.value.append("evaluationFactor", String(data.evaluationFactor || "0"));
-	// snedForm.value.append("status", data.status || "active");
-	// snedForm.value.append("userId", String(data.userId || "1"));
-};
 
 const imageSwicherAction = () => {
 	imageSwicher.value = !imageSwicher.value;
@@ -48,19 +38,26 @@ const previewImage = (event: Event): void => {
 
 const uploadImage = async (e: Event) => {
 	e.preventDefault();
-	console.log(authUser.value);
 	if (!snedForm.value) return;
 	const formData = new FormData(snedForm.value);
-	formData.append("userId", authUser.value.id);
+	formData.append("userId", String(authUser.value?.id));
 	try {
-		imagerStore.addImagerPathAction(formData);
+		const res = await imagerStore.addImagerPathAction(formData);
+		if (res?.status === 201) {
+			$toast.success("imageUploadSuccess");
+		} else {
+			$toast.success("imageUploadError");
+		}
 	} catch (error) {
 		console.error("アップロードエラー:", error);
+		$toast.success("imageActionError");
 	}
 };
 
 onMounted(() => {
-	imagerStore.getImagerPathAction(authUser.value.id);
+	if (authUser.value?.id) {
+		imagerStore.getImagerPathAction(authUser.value?.id);
+	}
 });
 </script>
 
@@ -69,7 +66,7 @@ onMounted(() => {
 		<Dialog
 		  :label="$t('imageList')"
 		>
-			<div class="image-uploader">
+			<div class="image-uploader h-[80vh]">
 				<button class="btn" @click="imageSwicherAction">{{ imageSwicher ? $t('imageList'):$t('imageUpload') }}</button>
 				<div
           v-if="imageSwicher"
@@ -88,10 +85,6 @@ onMounted(() => {
               <p class="pb-4">
                 <label class="label inline-block">caption</label>
                 <input type="text" name="caption" class="input">
-              </p>
-              <p class="pb-4">
-                <label class="label inline-block">status</label>
-                <input type="text" name="status" class="input">
               </p>
               <button type="submit" :disabled="!selectedFile" class="mt-2 bg-blue-500 text-white p-2 rounded">
                 アップロード
@@ -120,7 +113,9 @@ onMounted(() => {
                 quality="70"
                 class="inline-block"
               ></nuxt-img>
-              <DialogImagerPartsDetail />
+              <DialogImagerPartsDetail
+                :item="item"
+              />
             </div>
           </div>
 				</div>

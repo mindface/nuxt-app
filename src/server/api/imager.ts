@@ -25,15 +25,52 @@ export default defineEventHandler(async (event) => {
 
 		if (method === "PUT") {
 			try {
-				const body = await readBody(event);
-				const { id, typekey, altText, caption, evaluationFactor, status } =
-					body;
-
-				if (!id) {
-					return { status: 400, message: "ID is required" };
+				const formData = await readMultipartFormData(event);
+				if (!formData) {
+					return { status: 400, message: "No file uploaded" };
 				}
+				const userIdField = formData.find((field) => field.name === "userId");
+				if (!userIdField || !("data" in userIdField)) {
+					return { status: 401, message: "Unauthorized: User ID is required" };
+				}
+				const userId = parseInt(String(userIdField.data.toString()), 10);
+				if (isNaN(userId)) {
+					return { status: 400, message: "Invalid User ID" };
+				}
+				const imageIdField = formData.find((field) => field.name === "imageId");
+				const imageId =
+					imageIdField && "data" in imageIdField
+						? imageIdField.data.toString()
+						: "";
+				const typekeyField = formData.find((field) => field.name === "typekey");
+				const typekey =
+					typekeyField && "data" in typekeyField
+						? typekeyField.data.toString()
+						: "";
+				const altTextField = formData.find((field) => field.name === "altText");
+				const altText =
+					altTextField && "data" in altTextField
+						? altTextField.data.toString()
+						: "";
+				const captionField = formData.find((field) => field.name === "caption");
+				const caption =
+					captionField && "data" in captionField
+						? captionField.data.toString()
+						: "";
+				const statusField = formData.find((field) => field.name === "status");
+				const status =
+					statusField && "data" in statusField
+						? statusField.data.toString()
+						: "";
+				const evaluationFactorField = formData.find(
+					(field) => field.name === "evaluationFactor",
+				);
+				const evaluationFactor =
+					evaluationFactorField && "data" in evaluationFactorField
+						? evaluationFactorField.data.toString()
+						: "";
 
-				const image = await ImagerService.updateImage(Number(id), {
+				const image = await ImagerService.updateImage(Number(imageId), {
 					typekey: typekey ?? "",
 					altText: altText ?? "",
 					caption: caption ?? "",

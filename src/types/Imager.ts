@@ -11,6 +11,7 @@ export type AddImager = {
 
 export type Imager = {
 	id: number;
+	typekey: string;
 	path: string;
 	altText: string;
 	caption: string;
