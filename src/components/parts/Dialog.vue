@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, inject } from "vue";
+import { ref } from "vue";
 const dialogRef = ref<HTMLDialogElement>();
 const isOpen = ref(false);
 const props = defineProps({

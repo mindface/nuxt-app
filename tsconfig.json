@@ -9,6 +9,10 @@
       "node_modules/@types",
       "types"
     ],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-  }
+  },
+  "include": ["**/*.ts", "**/*.d.ts", "**/*.vue"]
 }

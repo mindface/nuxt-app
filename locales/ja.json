@@ -5,11 +5,16 @@
   "NotLogin": "ログイン情報に誤りがあります",
   "DialogAddTaskEvaluationTitle": "タグの追加モーダル",
   "AddButton":"追加する",
+  "update": "更新",
+  "detail": "詳細",
   "AddTag":"タグを追加",
   "DialogTagList":"タグを一覧へ",
   "DialogTagForm":"タグを追加フォームへ",
 
   "confirmDeletion":"削除の確認",
   "selectedTag":"選択したタグ",
-  "searchAction":"検索する"
+  "searchAction":"検索する",
+
+  "imageList":"画像一覧",
+  "imageUpload":"画像アップロード"
 }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-const { $toast, $t } = useNuxtApp();
-import type { Task } from "../types/Task";
+const { $t } = useNuxtApp();
 
 import { useAuthStore } from "../store/auth";
 import { useTaskStore } from "../store/task";

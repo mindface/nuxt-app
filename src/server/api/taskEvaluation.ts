@@ -22,6 +22,7 @@ export default defineEventHandler(async (event) => {
 					await TaskEvaluationsService.getTaskEvaluationById(taskId);
 				return { status: 200, taskEvaluation };
 			}
+
 			return { status: 400, message: "TaskEvaluation IDs is required" };
 		}
 
@@ -36,11 +37,12 @@ export default defineEventHandler(async (event) => {
 
 		if (method === "PUT") {
 			const body = await readBody(event);
-			if (!body.id)
+			if (!body.id) {
 				return {
 					status: 400,
 					message: "TaskEvaluation ID is required for update",
 				};
+			}
 
 			const updatedTask = await TaskEvaluationsService.updateTaskEvaluation(
 				body.id,
