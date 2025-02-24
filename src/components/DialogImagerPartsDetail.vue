@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useNuxtApp } from "nuxt/app";
-import { storeToRefs } from "pinia";
-import { ref, watch, type PropType } from "vue";
-import { useAuthStore } from "../store/auth";
+import { ref, type PropType } from "vue";
 import { useImagerStore } from "../store/imager";
 import type { Imager } from "../types/Imager";
 
@@ -23,13 +21,9 @@ const props = defineProps({
 });
 
 const imagerStore = useImagerStore();
-const authStore = useAuthStore();
-const { imagerLinst } = storeToRefs(imagerStore);
-const { authUser } = storeToRefs(authStore);
 
 const fromSwicher = ref(false);
 const snedForm = ref<HTMLFormElement>();
-const selectedFile = ref<File | null>(null);
 
 const VModelAltText = ref(props.item?.altText ?? "");
 const VModelCaption = ref(props.item?.caption ?? "");
@@ -37,6 +31,7 @@ const VModelEvaluationFactor = ref(props.item?.evaluationFactor ?? 0);
 
 const setDataAction = () => {
 	console.log(props.item?.altText);
+	console.log("---watch2");
 	// snedForm.value.append("altText", props.item.altText ?? "default value");
 	// snedForm.value.append("caption", data.caption || "");
 	// snedForm.value.append("evaluationFactor", String(data.evaluationFactor || "0"));
@@ -73,15 +68,6 @@ const updateImage = async (e: Event) => {
 		}
 	}
 };
-
-watch(
-	() => props.item,
-	() => {
-		console.log("---");
-		setDataAction();
-	},
-	{ deep: true },
-);
 </script>
 
 <template>

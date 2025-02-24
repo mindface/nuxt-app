@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-const { t, locale } = useI18n();
 import { useAuthStore } from "../store/auth";
+const { t, locale } = useI18n();
 const route = useRoute();
 
 const menuSwitch = ref(false);
@@ -80,7 +80,7 @@ const pathList = [
     <div v-if="menuSwitch" class="menu-box fixed z-10">
       <ul class="bg-white p-1 shadow">
         <li v-for="item in pathList" :key="item.pathName">
-          <NuxtLink :to="item.path" class="inline-block p-1 ">{{ item.pathName }}</NuxtLink>
+          <NuxtLink :to="item.path" class="inline-block p-1">{{ item.pathName }}</NuxtLink>
         </li>
       </ul>
     </div>
