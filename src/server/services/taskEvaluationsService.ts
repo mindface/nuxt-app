@@ -26,11 +26,11 @@ class TaskEvaluationsService {
 							})) || [],
 					},
 				},
-				// include: {
-				// 	task: true,
-				// 	user: true,
-				// 	tags: true,
-				// },
+				include: {
+					task: true,
+					user: true,
+					tags: true,
+				},
 			});
 
 			return taskEvaluation;

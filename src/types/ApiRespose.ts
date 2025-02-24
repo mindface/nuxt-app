@@ -1,8 +1,10 @@
-import type { User } from "./User";
-import type { Task } from "./Task";
-import type { TaskEvaluation } from "./TaskEvaluation";
 import type { EvaluationTag } from "./EvaluationTag";
 import type { Imager } from "./Imager";
+import type { Message } from "./Message";
+import type { Room } from "./Room";
+import type { Task } from "./Task";
+import type { TaskEvaluation } from "./TaskEvaluation";
+import type { User } from "./User";
 
 export type TaskResponse = {
 	status: number;
@@ -38,4 +40,14 @@ export type ImagerCreateResponse = {
 	status: number;
 	path: string;
 	image: Imager;
+};
+
+export type RoomResponse = {
+	status: number;
+	rooms: Room[];
+};
+
+export type MessageResponse = {
+	status: number;
+	messages: Message[];
 };

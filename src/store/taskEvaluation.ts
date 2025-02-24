@@ -1,12 +1,12 @@
 import { defineStore } from "pinia";
+import type { TaskEvaluationResponse } from "../types/ApiRespose";
 import type {
 	AddTaskEvaluation,
-	UpdateTaskEvaluation,
 	TaskEvaluation,
+	UpdateTaskEvaluation,
 } from "../types/TaskEvaluation";
-import type { TaskEvaluationResponse } from "../types/ApiRespose";
 
-export const useTaskEvaluationStore = defineStore("TaskEvaluation", () => {
+export const useTaskEvaluationStore = defineStore("taskEvaluation", () => {
 	const taskEvaluationList = ref<TaskEvaluation[]>([]);
 	const headers = {
 		"Content-Type": "application/json",
@@ -15,13 +15,10 @@ export const useTaskEvaluationStore = defineStore("TaskEvaluation", () => {
 
 	async function getTaskEvaluationAllList(userId: number) {
 		try {
-			const data = await $fetch<TaskEvaluationResponse>(
-				`/api/taskEvaluation?userId=${userId}`,
-				{
-					method: "GET",
-					headers: headers,
-				},
-			);
+			const data = (await $fetch(`/api/taskEvaluation?userId=${userId}`, {
+				method: "GET",
+				headers: headers,
+			})) as TaskEvaluationResponse;
 			if (data) {
 				console.log(data);
 				taskEvaluationList.value = data.taskEvaluation ?? [];
@@ -33,13 +30,10 @@ export const useTaskEvaluationStore = defineStore("TaskEvaluation", () => {
 
 	async function getTaskEvaluationList(taskId: number) {
 		try {
-			const data = await $fetch<TaskEvaluationResponse>(
-				`/api/taskEvaluation?id=${taskId}`,
-				{
-					method: "GET",
-					headers: headers,
-				},
-			);
+			const data = (await $fetch(`/api/taskEvaluation?id=${taskId}`, {
+				method: "GET",
+				headers: headers,
+			})) as TaskEvaluationResponse;
 			if (data) {
 				taskEvaluationList.value = data.taskEvaluation ?? [];
 			}
@@ -49,14 +43,14 @@ export const useTaskEvaluationStore = defineStore("TaskEvaluation", () => {
 	}
 	async function addTaskEvaluation(addTaskEvaluation: AddTaskEvaluation) {
 		try {
-			const data = await $fetch<TaskEvaluationResponse>(
+			const data = (await $fetch(
 				"/api/taskEvaluation?selectTags=${selectTags}",
 				{
 					method: "POST",
 					headers: headers,
 					body: JSON.stringify(addTaskEvaluation),
 				},
-			);
+			)) as TaskEvaluationResponse;
 			return { message: "success" };
 		} catch (error) {
 			console.error(`error`, error);
@@ -64,11 +58,11 @@ export const useTaskEvaluationStore = defineStore("TaskEvaluation", () => {
 	}
 	async function updateTaskEvaluation(taskEvaluation: UpdateTaskEvaluation) {
 		try {
-			const data = await $fetch<TaskEvaluationResponse>("/api/taskEvaluation", {
+			const data = (await $fetch("/api/taskEvaluation", {
 				method: "PUT",
 				headers: headers,
 				body: JSON.stringify(taskEvaluation),
-			});
+			})) as TaskEvaluationResponse;
 			console.log(data);
 			return { message: "success" };
 		} catch (error) {

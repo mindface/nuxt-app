@@ -24,6 +24,8 @@ model User {
   tasks    Task[]
   TaskEvaluations TaskEvaluation[]
   images Image[]
+  messages  Message[]
+  rooms     UserRoom[]
 }
 
 model Task {
@@ -86,4 +88,33 @@ model Image {
   user            User     @relation(fields: [userId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+model Room {
+  id        String   @id @default(cuid())
+  name      String?
+  users     UserRoom[]
+  messages  Message[]
+  createdAt DateTime @default(now())
+}
+
+model UserRoom {
+  id        String   @id @default(cuid())
+  userId    Int
+  roomId    String
+  user      User   @relation(fields: [userId], references: [id])
+  room      Room   @relation(fields: [roomId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roomId]) // ユーザーごとの部屋をユニークにする
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  roomId    String
+  senderId  Int
+  content   String
+  createdAt DateTime @default(now())
+  room      Room   @relation(fields: [roomId], references: [id])
+  sender    User   @relation(fields: [senderId], references: [id])
 }

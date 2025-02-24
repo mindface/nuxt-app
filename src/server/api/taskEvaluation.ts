@@ -1,6 +1,6 @@
-import { useAuth } from "../utils/auth";
-import TaskEvaluationsService from "../services/taskEvaluationsService";
 import { defineEventHandler, getQuery, readBody } from "h3";
+import TaskEvaluationsService from "../services/taskEvaluationsService";
+import { useAuth } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
 	await useAuth(event);
