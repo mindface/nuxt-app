@@ -19,6 +19,10 @@ export default defineNuxtConfig({
     // '@nuxtjs/i18n',
   ],
 
+  build: {
+    transpile: ['jspdf', 'html2canvas']
+  },
+
   css: ['/assets/style/main.css'],
 
   postcss: {
