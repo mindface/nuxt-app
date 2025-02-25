@@ -7,15 +7,30 @@ export default defineNuxtConfig({
       localUrl: process.env.LOCAL_URL
     }
   },
+  // io: {
+  //   sockets: [{
+  //     name: 'main',
+  //     url: 'http://localhost:3000'
+  //   }]
+  // },
+  nitro: {
+    experimental: {
+      websocket: true
+    },
+    routeRules: {
+      '/socket.io/**': { proxy: 'http://localhost:3000/socket.io/' },
+    },
+  },
   experimental: {
     viewTransition: true
   },
-  // devtools: { enabled: true },
+  devtools: { enabled: true },
   srcDir: 'src/',
 
   modules: [
     '@pinia/nuxt',
     '@nuxt/image',
+    'nuxt-socket-io',
     // '@nuxtjs/i18n',
   ],
 

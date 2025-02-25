@@ -19,11 +19,15 @@
   "imageUpload":"image upload",
   "noImageId": "no image id",
 
+  "roomArea":"room area",
+  "comentArea":"coment area",
   
   "imageUploadSuccess": "image upload success",
   "imageUploadError": "image upload error",
   "imageUpdateSuccess": "image Update success",
   "imageUpdateError": "image Update error",
-  "imageActionError": "image action error"
+  "imageActionError": "image action error",
 
+  "messageSuccess":"message success",
+  "messageError":"The message could not be sent. \nPlease check with your administrator."
 }

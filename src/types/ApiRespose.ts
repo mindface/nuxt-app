@@ -1,7 +1,7 @@
 import type { EvaluationTag } from "./EvaluationTag";
 import type { Imager } from "./Imager";
 import type { Message } from "./Message";
-import type { Room } from "./Room";
+import type { UserRoom } from "./Room";
 import type { Task } from "./Task";
 import type { TaskEvaluation } from "./TaskEvaluation";
 import type { User } from "./User";
@@ -44,7 +44,7 @@ export type ImagerCreateResponse = {
 
 export type RoomResponse = {
 	status: number;
-	rooms: Room[];
+	rooms: UserRoom[];
 };
 
 export type MessageResponse = {

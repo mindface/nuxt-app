@@ -1,4 +1,4 @@
-import { defineEventHandler, getQuery, readBody } from "h3";
+import { defineEventHandler, getQuery } from "h3";
 import messageService from "../services/messageService";
 import { useAuth } from "../utils/auth";
 
@@ -16,16 +16,30 @@ export default defineEventHandler(async (event) => {
 		}
 
 		if (method === "POST") {
-			const body = await readBody(event);
-			if (!body.roomId || !body.senderId || !body.content)
-				return {
-					status: 400,
-					message: "Room ID, sender ID, and content are required",
-				};
+			const formData = await readMultipartFormData(event);
+			if (!formData) {
+				return { status: 400, message: "No data commit" };
+			}
+			const roomIdField = formData.find((field) => field.name === "roomId");
+			const roomId =
+				roomIdField && "data" in roomIdField ? roomIdField.data.toString() : "";
+			const senderIdField = formData.find((field) => field.name === "senderId");
+			if (!senderIdField || !("data" in senderIdField)) {
+				return { status: 401, message: "Unauthorized: User ID is required" };
+			}
+			const senderId = parseInt(String(senderIdField.data.toString()), 10);
+			if (isNaN(senderId)) {
+				return { status: 400, message: "Invalid User ID" };
+			}
+			const contentField = formData.find((field) => field.name === "content");
+			const content =
+				contentField && "data" in contentField
+					? contentField.data.toString()
+					: "";
 			const message = await messageService.sendMessage(
-				body.roomId,
-				body.senderId,
-				body.content,
+				roomId,
+				senderId,
+				content,
 			);
 			return { status: 201, message };
 		}

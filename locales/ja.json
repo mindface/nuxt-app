@@ -18,10 +18,16 @@
   "imageList":"画像一覧",
   "imageUpload":"画像アップロード",
 
+  "roomArea":"ルームエリア",
+  "comentArea":"コメントエリア",
+
   "noImageId": "イメージのＩＤがありません。",
   "imageUploadSuccess": "画像のアップロードしました。",
   "imageUploadError": "画像のアップロードに失敗しました。",
   "imageUpdateSuccess": "画像の更新しました。",
   "imageUpdateError": "画像の更新に失敗しました。",
-  "imageActionError": "画像の操作でエラーが発生しました。"
+  "imageActionError": "画像の操作でエラーが発生しました。",
+
+  "messageSuccess":"メッセージに送信しました。",
+  "messageError":"メッセージに送信できませんでした。\n管理者に確認してください。"
 }

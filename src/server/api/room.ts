@@ -1,4 +1,4 @@
-import { defineEventHandler, getQuery, readBody } from "h3";
+import { defineEventHandler, getQuery } from "h3";
 import roomService from "../services/roomService";
 import { useAuth } from "../utils/auth";
 
@@ -16,10 +16,26 @@ export default defineEventHandler(async (event) => {
 		}
 
 		if (method === "POST") {
-			const body = await readBody(event);
-			if (!body.name || !body.userId)
+			const formData = await readMultipartFormData(event);
+			if (!formData) {
+				return { status: 400, message: "No data commit" };
+			}
+			const userIdField = formData.find((field) => field.name === "userId");
+			if (!userIdField || !("data" in userIdField)) {
+				return { status: 401, message: "Unauthorized: User ID is required" };
+			}
+			const userId = parseInt(String(userIdField.data.toString()), 10);
+			if (isNaN(userId)) {
+				return { status: 400, message: "Invalid User ID" };
+			}
+			const nameField = formData.find((field) => field.name === "name");
+			const name =
+				nameField && "data" in nameField ? nameField.data.toString() : "";
+
+			if (!name) {
 				return { status: 400, message: "Room name and user ID are required" };
-			const room = await roomService.createRoom(body.name, body.userId);
+			}
+			const room = await roomService.createRoom(name, userId);
 			return { status: 201, room };
 		}
 

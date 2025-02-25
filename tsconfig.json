@@ -7,13 +7,16 @@
     "jsx": "preserve",
     "typeRoots": [
       "node_modules/@types",
-      "types"
+      "./src/types"
     ],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true
   },
-  // "include": ["**/*.ts", "**/*.d.ts", "**/*.vue"],
+  "include": [
+    "types/nitro.d.ts",
+    // "**/*.ts", "**/*.d.ts", "**/*.vue"
+  ],
   "exclude": ["node_modules"]
 }

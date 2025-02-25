@@ -17,6 +17,7 @@ class MessageService {
 	}
 
 	async getRoomMessages(roomId: string) {
+		console.log(roomId);
 		try {
 			return await prisma.message.findMany({
 				where: { roomId },
