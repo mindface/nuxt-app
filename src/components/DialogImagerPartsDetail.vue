@@ -20,6 +20,8 @@ const props = defineProps({
 	},
 });
 
+const { localUrl } = useRuntimeConfig().app;
+
 const imagerStore = useImagerStore();
 
 const fromSwicher = ref(false);
@@ -85,7 +87,7 @@ const updateImage = async (e: Event) => {
   <div>
 			<div class="dialog-imager-parts-detail relative">
         <button class="p-2 border" @click="imageSwicherAction()">{{ $t("detail") }}</button>
-        <button class="p-2 border" @click="downLoadActtion(`http://localhost:3000${props.item?.path}`)">{{ $t("imageDownload") }}</button>
+        <button class="p-2 border" @click="downLoadActtion(`${localUrl}${props.item?.path}`)">{{ $t("imageDownload") }}</button>
         <Transition name="fade">
           <div
             v-if="fromSwicher"

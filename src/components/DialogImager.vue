@@ -7,6 +7,7 @@ import { useImagerStore } from "../store/imager";
 import Dialog from "./parts/Dialog.vue";
 // import DialogImagerPartsDetail from "./DialogImagerPartsDetail.vue";
 
+const { localUrl } = useRuntimeConfig().app;
 const { $toast, $t } = useNuxtApp();
 
 const imagerStore = useImagerStore();
@@ -109,7 +110,7 @@ onMounted(() => {
           >
             <div class="image-box__inner">
               <nuxt-img
-                :src="`http://localhost:3000${item.path}`"
+                :src="`${localUrl}${item.path}`"
                 width="220"
                 height="120"
                 quality="70"
