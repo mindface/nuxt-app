@@ -19,15 +19,15 @@ export default defineNuxtConfig({
     },
     routeRules: {
       '/socket.io/**': {
-        proxy: 'http://localhost:3000/socket.io/'
+        proxy: 'http://localhost:3000/'
       },
     },
-    devProxy: {
-      "/socket.io/": {
-        target: "http://localhost:3000",
-        ws: true,
-      },
-    },
+    // devProxy: {
+    //   "/socket.io/": {
+    //     target: "http://localhost:3000",
+    //     ws: true,
+    //   },
+    // },
   },
   experimental: {
     viewTransition: true
@@ -38,7 +38,6 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@nuxt/image',
-    'nuxt-socket-io',
     // '@nuxtjs/i18n',
   ],
 

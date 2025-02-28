@@ -1,5 +1,4 @@
 import prisma from "../utils/prisma";
-import ImagerService from "../services/imagerService";
 
 class ImageService {
 	async createImage(data: {

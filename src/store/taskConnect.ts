@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { ref } from "vue";
 
 // connectIdがtaskのIDを利用
 export interface TaskConnect {

@@ -1,6 +1,8 @@
+import { useCookie, useFetch } from "nuxt/app";
 import { defineStore } from "pinia";
-import type { AddTask, Task } from "../types/Task";
+import { ref } from "vue";
 import type { TasksResponse } from "../types/ApiRespose";
+import type { AddTask, Task } from "../types/Task";
 
 export const useTaskStore = defineStore("task", () => {
 	const taskList = ref<Task[]>([]);

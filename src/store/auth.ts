@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
+import { navigateTo, useCookie } from "nuxt/app";
 import { defineStore } from "pinia";
-import type { User, AddUser } from "../types/User";
+import { ref } from "vue";
 import type { UserResponse } from "../types/ApiRespose";
+import type { AddUser, User } from "../types/User";
 
 let tokenCheckInterval: NodeJS.Timeout | null = null;
 

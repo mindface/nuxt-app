@@ -1,6 +1,9 @@
+import { useCookie, useFetch } from "nuxt/app";
 import { defineStore } from "pinia";
-import type { AddEvaluationTag, EvaluationTag } from "../types/EvaluationTag";
+import { ref } from "vue";
 import type { EvaluationTagResponse } from "../types/ApiRespose";
+import type { AddEvaluationTag, EvaluationTag } from "../types/EvaluationTag";
+import { headersTypeJson } from "../utils/headers-helper";
 
 export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 	const tagList = ref<EvaluationTag[]>([]);
@@ -13,7 +16,7 @@ export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 		try {
 			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
 				method: "GET",
-				headers: headers,
+				headers: headersTypeJson(),
 			});
 			if (data) {
 				tagList.value = data.tags ?? [];
@@ -26,7 +29,7 @@ export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 		try {
 			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
 				method: "POST",
-				headers: headers,
+				headers: headersTypeJson(),
 				body: JSON.stringify(addEvaluationTag),
 			});
 		} catch (error) {
@@ -37,7 +40,7 @@ export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 		try {
 			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
 				method: "PUT",
-				headers: headers,
+				headers: headersTypeJson(),
 				body: JSON.stringify(tagItem),
 			});
 		} catch (error) {

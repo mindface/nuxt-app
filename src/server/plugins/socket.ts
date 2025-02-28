@@ -1,11 +1,12 @@
 import { toNodeListener } from "h3";
 import { defineNitroPlugin } from "nitropack/dist/runtime/plugin";
+import { createServer } from "node:http";
 import { Server } from "socket.io";
 
 export default defineNitroPlugin((nitroApp) => {
 	console.log("Nitro App Server02:", nitroApp.h3App.websocket);
 	nitroApp.hooks.hook("render:response", () => {
-		const server = toNodeListener(nitroApp.h3App);
+		const server = createServer(toNodeListener(nitroApp.h3App));
 		console.log("io--------");
 		console.log(globalThis.io);
 		if (true) {
