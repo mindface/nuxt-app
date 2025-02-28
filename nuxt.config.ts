@@ -18,7 +18,15 @@ export default defineNuxtConfig({
       websocket: true
     },
     routeRules: {
-      '/socket.io/**': { proxy: 'http://localhost:3000/socket.io/' },
+      '/socket.io/**': {
+        proxy: 'http://localhost:3000/socket.io/'
+      },
+    },
+    devProxy: {
+      "/socket.io/": {
+        target: "http://localhost:3000",
+        ws: true,
+      },
     },
   },
   experimental: {

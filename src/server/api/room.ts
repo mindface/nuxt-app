@@ -1,4 +1,4 @@
-import { defineEventHandler, getQuery } from "h3";
+import { defineEventHandler, getQuery, readMultipartFormData } from "h3";
 import roomService from "../services/roomService";
 import { useAuth } from "../utils/auth";
 

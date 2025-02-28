@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useNuxtApp } from "nuxt/app";
 import { storeToRefs } from "pinia";
+import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/auth";
 import { useRoomStore } from "../store/room";
 

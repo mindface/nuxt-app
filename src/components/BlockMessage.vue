@@ -52,15 +52,24 @@ watch(
 );
 
 onMounted(() => {
-	messageStore.listenForMessages(currentRoom.value?.roomId);
+	if (currentRoom.value?.roomId) {
+		messageStore.listenForMessages(currentRoom.value?.roomId);
+	}
 });
 onUnmounted(() => {
 	messageStore.disconnect();
 });
+
+const action = () => {
+	if (currentRoom.value?.id) {
+		socketStore.joinRoom(currentRoom.value?.roomId);
+	}
+};
 </script>
 
 <template>
 <div class="message-box">
+	<button @click="action()">333add</button>
   <h4 class="title">{{ $t("comentArea") }}</h4>
   <div class="message-add">
     <form ref="sendForm" @submit.prevent="addMessageAction">

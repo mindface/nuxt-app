@@ -72,8 +72,6 @@ export const useMessageStore = defineStore("message", () => {
 					messageList.value.push(newMessage);
 				}
 			});
-
-			// ... (その他のイベントリスナー)
 		} else {
 			socket.value.emit("joinRoom", roomId);
 		}

@@ -48,6 +48,7 @@
     "@prisma/generator-helper": "^6.3.1",
     "bcryptjs": "^2.4.3",
     "dayjs": "^1.11.10",
+    "engine.io": "^6.6.4",
     "jsonwebtoken": "^9.0.2",
     "nuxt": "^3.15.4",
     "nuxt-socket-io": "^3.0.13",
