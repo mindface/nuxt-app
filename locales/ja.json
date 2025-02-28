@@ -17,6 +17,7 @@
 
   "imageList":"画像一覧",
   "imageUpload":"画像アップロード",
+  "imageDownload":"画像ダウンロード",
 
   "noImageId": "イメージのＩＤがありません。",
   "imageUploadSuccess": "画像のアップロードしました。",

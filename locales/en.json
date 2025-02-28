@@ -17,8 +17,8 @@
 
   "imageList":"image list",
   "imageUpload":"image upload",
+  "imageDownload":"image down load",
   "noImageId": "no image id",
-
   
   "imageUploadSuccess": "image upload success",
   "imageUploadError": "image upload error",

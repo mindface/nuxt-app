@@ -67,7 +67,9 @@ onMounted(() => {
 		  :label="$t('imageList')"
 		>
 			<div class="image-uploader h-[80vh]">
-				<button class="btn" @click="imageSwicherAction">{{ imageSwicher ? $t('imageList'):$t('imageUpload') }}</button>
+        <p class="p-4">
+          <button class="btn p-2 border" @click="imageSwicherAction">{{ imageSwicher ? $t('imageList'):$t('imageUpload') }}</button>
+        </p>
 				<div
           v-if="imageSwicher"
           class="image-uploader__upload-area"
