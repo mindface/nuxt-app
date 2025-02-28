@@ -1,20 +1,17 @@
 import { defineStore } from "pinia";
-import type { AddEvaluationTag, EvaluationTag } from "../types/EvaluationTag";
 import type { EvaluationTagResponse } from "../types/ApiRespose";
+import type { AddEvaluationTag, EvaluationTag } from "../types/EvaluationTag";
+import { headersTypeJson } from "../utils/headers-helper";
 
 export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 	const tagList = ref<EvaluationTag[]>([]);
-	const headers = {
-		"Content-Type": "application/json",
-		Authorization: `Bearer ${useCookie("auth_token").value}`,
-	};
 
 	async function getEvaluationTagList() {
 		try {
-			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
+			const data = (await $fetch("/api/evaluationTag", {
 				method: "GET",
-				headers: headers,
-			});
+				headers: headersTypeJson(),
+			})) as EvaluationTagResponse;
 			if (data) {
 				tagList.value = data.tags ?? [];
 			}
@@ -24,22 +21,22 @@ export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 	}
 	async function addEvaluationTag(addEvaluationTag: AddEvaluationTag) {
 		try {
-			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
+			const data = (await $fetch("/api/evaluationTag", {
 				method: "POST",
-				headers: headers,
+				headers: headersTypeJson(),
 				body: JSON.stringify(addEvaluationTag),
-			});
+			})) as EvaluationTagResponse;
 		} catch (error) {
 			console.error(`error`, error);
 		}
 	}
 	async function updateEvaluationTag(tagItem: EvaluationTag) {
 		try {
-			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
+			const data = (await $fetch("/api/evaluationTag", {
 				method: "PUT",
-				headers: headers,
+				headers: headersTypeJson(),
 				body: JSON.stringify(tagItem),
-			});
+			})) as EvaluationTagResponse;
 		} catch (error) {
 			console.error("error", error);
 		}

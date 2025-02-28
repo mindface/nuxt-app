@@ -1,14 +1,11 @@
 import { defineStore } from "pinia";
-import type { AddTask, Task } from "../types/Task";
 import type { TasksResponse } from "../types/ApiRespose";
+import type { AddTask, Task } from "../types/Task";
+import { headersTypeJson } from "../utils/headers-helper";
 
 export const useTaskStore = defineStore("task", () => {
 	const taskList = ref<Task[]>([]);
 	const taskItem = ref<Task>();
-	const headers = {
-		"Content-Type": "application/json",
-		Authorization: `Bearer ${useCookie("auth_token").value}`,
-	};
 
 	const setTasks = (tasks: Task[]) => {
 		taskList.value = tasks;
@@ -16,13 +13,13 @@ export const useTaskStore = defineStore("task", () => {
 
 	async function getTaskSearch(userId: number, text: string) {
 		try {
-			const data = await $fetch<TasksResponse>(
+			const data = (await $fetch(
 				`/api/taskSearch?userId=${userId}&title=${text}`,
 				{
 					method: "GET",
-					headers: headers,
+					headers: headersTypeJson(),
 				},
-			);
+			)) as TasksResponse;
 			if (data) {
 				console.log(data);
 				taskList.value = data?.tasks;
@@ -34,13 +31,10 @@ export const useTaskStore = defineStore("task", () => {
 
 	async function getTaskItem(userId: number, taskId?: number) {
 		try {
-			const data = await $fetch<TasksResponse>(
-				`/api/task?userId=${userId}&id=${taskId}`,
-				{
-					method: "GET",
-					headers: headers,
-				},
-			);
+			const data = (await $fetch(`/api/task?userId=${userId}&id=${taskId}`, {
+				method: "GET",
+				headers: headersTypeJson(),
+			})) as TasksResponse;
 			if (data) {
 				taskItem.value = data?.tasks[0];
 			}
@@ -50,10 +44,10 @@ export const useTaskStore = defineStore("task", () => {
 	}
 	async function getTaskList(userId: number) {
 		try {
-			const data = await $fetch<TasksResponse>(`/api/task?userId=${userId}`, {
+			const data = (await $fetch(`/api/task?userId=${userId}`, {
 				method: "GET",
-				headers: headers,
-			});
+				headers: headersTypeJson(),
+			})) as TasksResponse;
 			if (data) {
 				taskList.value = data.tasks ?? [];
 			}
@@ -63,22 +57,22 @@ export const useTaskStore = defineStore("task", () => {
 	}
 	async function addTask(addTask: AddTask) {
 		try {
-			const data = await $fetch<TasksResponse>("/api/task", {
+			const data = (await $fetch("/api/task", {
 				method: "POST",
-				headers: headers,
+				headers: headersTypeJson(),
 				body: JSON.stringify(addTask),
-			});
+			})) as TasksResponse;
 		} catch (error) {
 			console.error(`error`, error);
 		}
 	}
 	async function updateTask(task: Task) {
 		try {
-			const data = await $fetch<TasksResponse>("/api/task", {
+			const data = (await $fetch("/api/task", {
 				method: "PUT",
-				headers: headers,
+				headers: headersTypeJson(),
 				body: JSON.stringify(task),
-			});
+			})) as TasksResponse;
 		} catch (error) {
 			console.error(`error`, error);
 		}

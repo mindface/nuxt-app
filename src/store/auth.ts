@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { defineStore } from "pinia";
-import type { User, AddUser } from "../types/User";
 import type { UserResponse } from "../types/ApiRespose";
+import type { AddUser, User } from "../types/User";
 
 let tokenCheckInterval: NodeJS.Timeout | null = null;
 
@@ -59,7 +59,6 @@ export const useAuthStore = defineStore("auth", () => {
 					password: siginupInfo.password,
 				},
 			})) as { user: User; status: number; token: string };
-			console.log(response);
 			if (response.status === 201) {
 				setUser(response.user, response.token);
 				navigateTo({ path: "/" });
@@ -91,13 +90,10 @@ export const useAuthStore = defineStore("auth", () => {
 
 	async function updateUserAction(updateUser: User) {
 		try {
-			const data = await $fetch<UserResponse>(
-				`/api/user?id=${authUser.value?.id}`,
-				{
-					method: "PUT",
-					body: updateUser,
-				},
-			);
+			const data = (await $fetch(`/api/user?id=${authUser.value?.id}`, {
+				method: "PUT",
+				body: updateUser,
+			})) as UserResponse;
 			if (data) {
 				authUser.value = data.user;
 				useCookie("auth_user").value = JSON.stringify(data.user);

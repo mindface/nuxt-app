@@ -24,11 +24,11 @@ export const roomStore = defineStore("room", () => {
 	}
 	async function createTask(addItem: AddRoom) {
 		try {
-			const data = await $fetch("/api/room", {
+			const data = (await $fetch("/api/room", {
 				method: "PUT",
 				headers: headers,
 				body: JSON.stringify(addItem),
-			});
+			})) as RoomResponse;
 		} catch (error) {
 			console.error(`error`, error);
 		}

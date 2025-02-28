@@ -5,6 +5,7 @@ import type {
 	TaskEvaluation,
 	UpdateTaskEvaluation,
 } from "../types/TaskEvaluation";
+import { headersTypeJson } from "../utils/headers-helper";
 
 export const useTaskEvaluationStore = defineStore("taskEvaluation", () => {
 	const taskEvaluationList = ref<TaskEvaluation[]>([]);
@@ -17,7 +18,7 @@ export const useTaskEvaluationStore = defineStore("taskEvaluation", () => {
 		try {
 			const data = (await $fetch(`/api/taskEvaluation?userId=${userId}`, {
 				method: "GET",
-				headers: headers,
+				headers: headersTypeJson(),
 			})) as TaskEvaluationResponse;
 			if (data) {
 				console.log(data);
@@ -32,7 +33,7 @@ export const useTaskEvaluationStore = defineStore("taskEvaluation", () => {
 		try {
 			const data = (await $fetch(`/api/taskEvaluation?id=${taskId}`, {
 				method: "GET",
-				headers: headers,
+				headers: headersTypeJson(),
 			})) as TaskEvaluationResponse;
 			if (data) {
 				taskEvaluationList.value = data.taskEvaluation ?? [];
@@ -47,7 +48,7 @@ export const useTaskEvaluationStore = defineStore("taskEvaluation", () => {
 				"/api/taskEvaluation?selectTags=${selectTags}",
 				{
 					method: "POST",
-					headers: headers,
+					headers: headersTypeJson(),
 					body: JSON.stringify(addTaskEvaluation),
 				},
 			)) as TaskEvaluationResponse;
@@ -60,7 +61,7 @@ export const useTaskEvaluationStore = defineStore("taskEvaluation", () => {
 		try {
 			const data = (await $fetch("/api/taskEvaluation", {
 				method: "PUT",
-				headers: headers,
+				headers: headersTypeJson(),
 				body: JSON.stringify(taskEvaluation),
 			})) as TaskEvaluationResponse;
 			console.log(data);
