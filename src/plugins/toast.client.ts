@@ -1,5 +1,5 @@
-import { defineNuxtPlugin } from "#app";
-import { useToast } from "vue-toast-notification";
+import { defineNuxtPlugin } from "nuxt/app";
+import { ToastProps, useToast } from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-default.css";
 
 export default defineNuxtPlugin((_nuxtApp) => {
@@ -8,7 +8,7 @@ export default defineNuxtPlugin((_nuxtApp) => {
 			toast: useToast({
 				position: "top-right",
 				duration: 4000,
-			}),
+			} as Partial<ToastProps>),
 		},
 	};
 });

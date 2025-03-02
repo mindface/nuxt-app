@@ -1,8 +1,8 @@
+import { existsSync, promises as fs, readdirSync } from "fs";
+import { defineEventHandler, readMultipartFormData } from "h3";
+import path from "path";
 import { useAuth } from "../utils/auth";
 import prisma from "../utils/prisma";
-import { defineEventHandler, readMultipartFormData } from "h3";
-import { promises as fs, existsSync, mkdirSync, readdirSync } from "fs";
-import path from "path";
 
 export default defineEventHandler(async (event) => {
 	await useAuth(event);
@@ -51,9 +51,9 @@ export default defineEventHandler(async (event) => {
 					? captionField.data.toString()
 					: "";
 
-			const evaluationFactorField = formData.find(
-				(field) => field.name === "evaluationFactor",
-			);
+			// const evaluationFactorField = formData.find(
+			// 	(field) => field.name === "evaluationFactor",
+			// );
 			// const evaluationFactor = evaluationFactorField && "data" in evaluationFactorField
 			//   ? parseFloat(evaluationFactorField.data.toString())
 			//   : 0;
@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
 					altText: altText as string,
 					caption: caption as string,
 					evaluationFactor: 0,
-					status: "active", //status as string,
+					status: "active",
 					userId,
 				},
 			});

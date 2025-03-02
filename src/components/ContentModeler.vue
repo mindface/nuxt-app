@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { ref } from "vue";
 import { useAuthStore } from "../store/auth";
 import { useTaskStore } from "../store/task";
-import type { AddTask, Task } from "../types/Task";
+import type { Task } from "../types/Task";
 import PartsActionBtns from "./PartsActionBtns.vue";
 import PartsTaskForm from "./PartsTaskForm.vue";
 

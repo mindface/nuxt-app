@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { PropType, ref } from "vue";
 import { useTaskStore } from "../store/task";
 import type { Task } from "../types/Task";
 import PartsActionBtns from "./PartsActionBtns.vue";

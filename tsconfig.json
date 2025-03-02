@@ -14,6 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true
   },
+  "typeRoots": ["./types", "./node_modules/@types"],
   "include": [
     "types/nitro.d.ts",
     // "**/*.ts", "**/*.d.ts", "**/*.vue"

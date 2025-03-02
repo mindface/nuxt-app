@@ -1,11 +1,11 @@
-import { useAuth } from "../utils/auth";
-import {
-	getTasks,
-	createTask,
-	updateTask,
-	deleteTask,
-} from "../services/taskService";
 import { defineEventHandler, getQuery, readBody } from "h3";
+import {
+	createTask,
+	deleteTask,
+	getTasks,
+	updateTask,
+} from "../services/taskService";
+import { useAuth } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
 	await useAuth(event);
@@ -32,8 +32,9 @@ export default defineEventHandler(async (event) => {
 
 		if (method === "PUT") {
 			const body = await readBody(event);
-			if (!body.id)
+			if (!body.id) {
 				return { status: 400, message: "Task ID is required for update" };
+			}
 
 			const updatedTask = await updateTask(body.id, body);
 			return { status: 200, task: updatedTask };

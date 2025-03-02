@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
 import { useAuthStore } from "../store/auth";
 import { useTaskStore } from "../store/task";
 import ContentTaskEdit from "./ContentTaskEdit.vue";

@@ -3,16 +3,16 @@ import { useNuxtApp } from "nuxt/app";
 import { storeToRefs } from "pinia";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { useAuthStore } from "../store/auth";
+import { useChatSocketStore } from "../store/chatSocket";
 import { useMessageStore } from "../store/message";
 import { useRoomStore } from "../store/room";
-import { useSocketStore } from "../store/socket";
 
 const { $toast, $t } = useNuxtApp();
 
 const messageStore = useMessageStore();
 const roomStore = useRoomStore();
 const authStore = useAuthStore();
-const socketStore = useSocketStore();
+const socketStore = useChatSocketStore();
 const { authUser } = storeToRefs(authStore);
 const { messageList } = storeToRefs(messageStore);
 const { currentRoom } = storeToRefs(roomStore);
@@ -23,15 +23,23 @@ const addMessageAction = async (e: Event) => {
 	if (!currentRoom.value?.id) return;
 	e.preventDefault();
 	const formData = new FormData(sendForm.value);
-	formData.append("roomId", currentRoom.value?.roomId);
-	formData.append("senderId", String(authUser.value?.id));
-	const res = await messageStore.createMessage(formData);
-	if (res?.status === 201) {
-		$toast.success("messageSuccess");
-		await messageStore.getMessageList(currentRoom.value?.roomId);
-	} else {
-		$toast.error("messageError");
+	const content = formData.get("content") ?? "";
+	if (authUser.value?.id) {
+		await messageStore.createMessage(
+			currentRoom.value.roomId,
+			authUser.value?.id,
+			content,
+		);
 	}
+	// formData.append("roomId", currentRoom.value?.roomId);
+	// formData.append("senderId", String(authUser.value?.id));
+	// const res = await messageStore.createMessage(formData);
+	// if (res?.status === 201) {
+	// 	$toast.success("messageSuccess");
+	// 	await messageStore.getMessageList(currentRoom.value?.roomId);
+	// } else {
+	// 	$toast.error("messageError");
+	// }
 	sendForm.value.reset();
 };
 
@@ -40,13 +48,13 @@ watch(
 	() => {
 		if (currentRoom.value?.id) {
 			messageStore.getMessageList(currentRoom.value?.roomId);
-			socketStore.joinRoom(currentRoom.value?.roomId);
+			// socketStore.joinRoom(currentRoom.value?.roomId);
 		}
-		if (currentRoom.value?.roomId) {
-			messageStore.connect(currentRoom.value.roomId);
-		} else {
-			messageStore.disconnect();
-		}
+		// if (currentRoom.value?.roomId) {
+		// 	messageStore.connect(currentRoom.value.roomId);
+		// } else {
+		// 	messageStore.disconnect();
+		// }
 	},
 	{ immediate: true },
 );

@@ -1,6 +1,6 @@
-import { useAuth } from "../utils/auth";
-import TaskEvaluationTagService from "../services/taskEvaluationTagService";
 import { defineEventHandler, getQuery, readBody } from "h3";
+import TaskEvaluationTagService from "../services/taskEvaluationTagService";
+import { useAuth } from "../utils/auth";
 
 export default defineEventHandler(async (event) => {
 	await useAuth(event);
@@ -13,8 +13,9 @@ export default defineEventHandler(async (event) => {
 				? Number(query.taskEvaluationId)
 				: undefined;
 
-			if (!taskEvaluationId)
+			if (!taskEvaluationId) {
 				return { status: 400, message: "TaskEvaluationTag ID is required" };
+			}
 
 			const tags =
 				await TaskEvaluationTagService.getTagsByTaskEvaluationId(

@@ -35,6 +35,7 @@ export default defineNitroPlugin((nitroApp) => {
 		"/socket.io/",
 		defineEventHandler({
 			handler(event) {
+				console.log("socket.io-|-handler");
 				(event.node.req as any).customContext = event.context;
 				const engineReq: any = {
 					...event.node.req,

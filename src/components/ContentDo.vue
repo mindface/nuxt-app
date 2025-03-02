@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
+import { useRouter } from "nuxt/app";
+import { ref } from "vue";
 import PartsDo from "./PartsDo.vue";
 
 const router = useRouter();

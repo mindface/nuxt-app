@@ -1,4 +1,4 @@
-import { useCookie, useFetch } from "nuxt/app";
+import { useFetch } from "nuxt/app";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { EvaluationTagResponse } from "../types/ApiRespose";
@@ -7,10 +7,6 @@ import { headersTypeJson } from "../utils/headers-helper";
 
 export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 	const tagList = ref<EvaluationTag[]>([]);
-	const headers = {
-		"Content-Type": "application/json",
-		Authorization: `Bearer ${useCookie("auth_token").value}`,
-	};
 
 	async function getEvaluationTagList() {
 		try {
