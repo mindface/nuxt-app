@@ -87,7 +87,6 @@ export default defineNitroPlugin((nitroApp) => {
 					socket.leave(room);
 				}
 			});
-
 			socket.join(roomId);
 			console.log(`User joined room ${roomId}`);
 		});
@@ -120,7 +119,17 @@ export default defineNitroPlugin((nitroApp) => {
 						const messages = await messageService.getRoomMessages(
 							message.roomId,
 						);
-						io.except(message.roomId).emit("roomMessages", {
+						// const roomSockets = io.sockets.adapter.rooms.get(message.roomId);
+						// if (roomSockets) {
+						// 	roomSockets.forEach((socketId) => {
+						// 		const socket = io.sockets.sockets.get(socketId);
+						// 		socket.emit("roomMessages", {
+						// 			roomId: message.roomId,
+						// 			messages,
+						// 		});
+						// 	});
+						// }
+						socket.except(message.roomId).emit("roomMessages", {
 							roomId: message.roomId,
 							messages,
 						});
@@ -143,9 +152,18 @@ export default defineNitroPlugin((nitroApp) => {
 		defineEventHandler({
 			handler(event) {
 				const parsedUrl = parse(event.node.req.url || "", true);
+
+				const queryParams: Record<string, string> = Object.fromEntries(
+					Object.entries(parsedUrl.query || {}).map(([key, value]) => [
+						key,
+						Array.isArray(value) ? value[0] : (value || "").toString(),
+					]),
+				);
+
 				const engineReq = Object.assign(event.node.req, {
-					_query: parsedUrl.query,
+					_query: queryParams,
 				});
+
 				engine.handleRequest(engineReq, event.node.res);
 				event._handled = true;
 			},
