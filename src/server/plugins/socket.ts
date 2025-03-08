@@ -87,6 +87,8 @@ export default defineNitroPlugin((nitroApp) => {
 					socket.leave(room);
 				}
 			});
+
+			console.log("ジョインソケットID:", socket.id);
 			socket.join(roomId);
 			console.log(`User joined room ${roomId}`);
 		});
@@ -111,14 +113,14 @@ export default defineNitroPlugin((nitroApp) => {
 				if (socket.connected) {
 					// socket.to(message.roomId).emit("newMessage", message);
 					try {
-						const resmessage = await messageService.sendMessage(
-							message.roomId,
-							message.senderId,
-							message.content,
-						);
-						const messages = await messageService.getRoomMessages(
-							message.roomId,
-						);
+						// const resmessage = await messageService.sendMessage(
+						// 	message.roomId,
+						// 	message.senderId,
+						// 	message.content,
+						// );
+						// const messages = await messageService.getRoomMessages(
+						// 	message.roomId,
+						// );
 						// const roomSockets = io.sockets.adapter.rooms.get(message.roomId);
 						// if (roomSockets) {
 						// 	roomSockets.forEach((socketId) => {
@@ -129,10 +131,33 @@ export default defineNitroPlugin((nitroApp) => {
 						// 		});
 						// 	});
 						// }
-						socket.except(message.roomId).emit("roomMessages", {
-							roomId: message.roomId,
-							messages,
-						});
+
+						const namespace = io.of("/");
+						const sockets = await namespace.fetchSockets();
+
+						for (const socket of sockets) {
+							if (socket.rooms.has(message.roomId)) {
+								console.log("ソケットID:", socket.id);
+								console.log("ルーム所属:", socket.rooms);
+								console.log(
+									"ルームチェック:",
+									socket.rooms.has(message.roomId),
+								);
+								console.log("接続状態:", socket.connected);
+								socket.emit("roomMessages", { roomId: message.roomId });
+							}
+						}
+						// const recipientSockets = io.adapter.sockets(new Set([message.roomId]));
+						// for (const socketId of recipientSockets) {
+						// 	io.to(socketId).emit("message", {
+						// 		roomId: message.roomId,
+						//   	messages,
+						// 	 });
+						// }
+						// socket.except(message.roomId).emit("roomMessages", {
+						// 	roomId: message.roomId,
+						// 	messages,
+						// });
 					} catch (error) {
 						console.error(error);
 					}
@@ -171,11 +196,13 @@ export default defineNitroPlugin((nitroApp) => {
 				open(peer) {
 					// @ts-expect-error private method and property
 					engine.prepare(peer._internal.nodeReq);
-					// @ts-expect-error private method and property
 					// console.log("peer");
 					// console.log(peer._internal);
+					// @ts-expect-error private method and property
 					engine.onWebSocket(
+						// @ts-expect-error private method and property
 						peer._internal.nodeReq,
+						// @ts-expect-error private method and property
 						peer._internal.nodeReq.socket,
 						peer.websocket,
 					);
