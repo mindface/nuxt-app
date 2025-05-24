@@ -24,11 +24,11 @@ const addMessageAction = async (e: Event) => {
 	e.preventDefault();
 	const formData = new FormData(sendForm.value);
 	const content = formData.get("content") ?? "";
-	if (authUser.value?.id) {
+	if (authUser.value?.id && content) {
 		await messageStore.createMessage(
 			currentRoom.value.roomId,
 			authUser.value?.id,
-			content,
+			content as string,
 		);
 	}
 	// formData.append("roomId", currentRoom.value?.roomId);
@@ -82,7 +82,7 @@ const action = () => {
   <div class="message-add">
     <form ref="sendForm" @submit.prevent="addMessageAction">
       <input type="text" name="content">
-      <button class="border p-2" type="submit">add</button>
+      <button @click="addMessageAction" class="border p-2" type="submit">add@</button>
     </form>
     </div>
     <div class="select-room">{{ currentRoom?.room.name }}</div>

@@ -19,12 +19,12 @@ export default defineNuxtConfig({
     },
     routeRules: {
       "/socket.io/**": {
-        proxy: "http://localhost:3002"
+        proxy: "http://localhost:3001"
       },
     },
     devProxy: {
       "/socket.io/": {
-        target: "http://localhost:3002",
+        target: "http://localhost:3001",
         ws: true,
       },
     },

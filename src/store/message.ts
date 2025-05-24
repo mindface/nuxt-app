@@ -9,17 +9,26 @@ export const useMessageStore = defineStore("message", () => {
 	const { currentRoom } = storeToRefs(roomStore);
 	const messageList = ref<Message[]>([]);
 	const socket = ref<any>(null);
-	const socketIO = io("http://localhost:3000", {
+	const socketIO = io("http://localhost:3001", {
 		path: "/socket.io",
-		transports: ["websocket"],
+		transports: ["websocket", "polling"],
 		reconnection: true,
 		reconnectionAttempts: 5,
 		reconnectionDelay: 1000,
 	});
 
-	socketIO.on("roomMessages", ({ roomId, messages }) => {
-		if (currentRoom.value?.roomId === roomId) {
-			messageList.value = messages;
+	socketIO.on("connect", () => {
+		socketIO.emit("joinRoom", currentRoom.value?.roomId);
+	});
+
+	socketIO.on("roomMessages", (data, callback) => {
+		console.log("受信 roomId:@", data.roomId);
+		if (typeof callback === "function") {
+			callback("クライアントで受信OK");
+		}
+
+		if (currentRoom.value?.roomId === data.roomId) {
+			messageList.value = data.messages;
 		}
 	});
 
@@ -88,6 +97,7 @@ export const useMessageStore = defineStore("message", () => {
 			});
 
 			socket.value.on("newMessage", (newMessage: Message) => {
+				console.log(newMessage);
 				if (
 					newMessage.roomId === roomId &&
 					!messageList.value.find((m) => m.id === newMessage.id)

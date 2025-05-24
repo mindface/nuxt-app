@@ -8,9 +8,9 @@ import { headerOnlyBearer, headersTypeJson } from "../utils/headers-helper";
 export const useRoomStore = defineStore("room", () => {
 	const roomList = ref<UserRoom[]>([]);
 	const currentRoom = ref<UserRoom>();
-	const socketIO = io("http://localhost:3000", {
+	const socketIO = io("http://localhost:3001", {
 		path: "/socket.io",
-		transports: ["websocket"],
+		transports: ["websocket", "polling"],
 		reconnection: true,
 		reconnectionAttempts: 5,
 		reconnectionDelay: 1000,

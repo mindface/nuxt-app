@@ -1,5 +1,4 @@
 import { toNodeListener } from "h3";
-import { parse } from "url";
 // import { defineNitroPlugin } from "nitropack/dist/runtime/plugin";
 import { createServer } from "node:http";
 // import { Server } from "socket.io";
@@ -50,19 +49,17 @@ import { createServer } from "node:http";
 // });
 
 import { Server as Engine } from "engine.io";
-import { defineEventHandler } from "h3";
 import { defineNitroPlugin } from "nitropack/dist/runtime/plugin";
 import { Server } from "socket.io";
 import messageService from "../services/messageService";
 
 export default defineNitroPlugin((nitroApp) => {
 	const engine = new Engine();
+	const l = toNodeListener(nitroApp.h3App);
+	const server = createServer(l);
 	if (!globalThis.io) {
-		const l = toNodeListener(nitroApp.h3App);
-		const server = createServer(l);
-		// new Server()だけでも実装して動く
 		globalThis.io = new Server(server, {
-			// path: "/socket.io",
+			path: "/socket.io",
 			cors: {
 				origin: "*",
 				methods: ["GET", "POST"],
@@ -73,143 +70,212 @@ export default defineNitroPlugin((nitroApp) => {
 			pingInterval: 25000,
 		});
 		globalThis.io.bind(engine);
-	}
+		if (import.meta.dev) {
+			server.listen(3001, () => {
+				console.log("Socket.IO server listening on http://localhost:3001");
+			});
+		}
 
-	const io = globalThis.io;
+		const io = globalThis.io;
 
-	io.on("connection", (socket) => {
-		console.log("A user connected");
+		io.on("connection", (socket) => {
+			console.log("A user connected");
+			const originalOn = socket.onevent;
+			socket.onevent = function (packet) {
+				console.log("Received event:", packet.data[0], packet.data.slice(1));
+				originalOn.call(this, packet);
+			};
 
-		socket.on("joinRoom", async (roomId: string, userId: number) => {
-			const currentRooms = Array.from(socket.rooms);
-			currentRooms.forEach((room) => {
-				if (room !== socket.id) {
-					socket.leave(room);
+			function logRoomsAndSockets() {
+				const adapter = io.of("/").adapter;
+				// console.log('===== ROOMS =====');
+				// console.log('Rooms Map:', Array.from(adapter.rooms).map(([roomId, sockets]) => {
+				// 	return { roomId, socketCount: sockets.size, socketIds: Array.from(sockets) };
+				// }));
+				// console.log('Sids Map:', Array.from(adapter.sids).map(([socketId, rooms]) => {
+				// 	return { socketId, joinedRooms: Array.from(rooms) };
+				// }));
+			}
+
+			// ブロードキャストをモニタリング
+			const originalBroadcast = io.of("/").adapter.broadcast;
+			// io.of('/').adapter.broadcast = function(packet, opts) {
+			// 	console.log('===== BROADCAST =====');
+			// 	console.log('Packet Type:', packet.type);
+			// 	console.log('Event:', packet.data[0]);
+			// 	console.log('Data:', packet.data.slice(1));
+			// 	console.log('Target Rooms:', Array.from(opts.rooms || []));
+			// 	console.log('Flags:', opts.flags);
+
+			// 	// 各ルームのソケット情報
+			// 	if (opts.rooms && opts.rooms.size > 0) {
+			// 		console.log('===== TARGET SOCKETS =====');
+			// 		opts.rooms.forEach(room => {
+			// 			const socketsInRoom = this.rooms.get(room);
+			// 			console.log(`Room "${room}":`, socketsInRoom ?
+			// 				Array.from(socketsInRoom) : 'No sockets');
+			// 		});
+			// 	}
+
+			// 	return originalBroadcast.call(this, packet, opts);
+			// };
+
+			socket.on("joinRoom", async (roomId: string, userId: number) => {
+				// const currentRooms = Array.from(socket.rooms);
+				// currentRooms.forEach((room) => {
+				// 	if (room !== socket.id) {
+				// 		socket.leave(room);
+				// 	}
+				// });
+				// socket.join('test-room');
+				socket.join(roomId);
+				// logRoomsAndSockets();
+				// ルームが存在するか確認
+				// console.log("Test room exists:", io.of('/').adapter.rooms.has('test-room'));
+				// console.log("Test room rooms:", io.of('/').adapter.rooms);
+				// console.log("io.adapter.socketRooms(socket.id)")
+				// console.log(io.of('/').adapter.addSockets(io.of("/").adapter,[roomId]))
+				// console.log(io.to(roomId))
+				// socket.join(roomId);
+				// console.log("Server configuration:");
+				// 	console.log("transports:", io._opts.transports)
+				// 	console.log("pingTimeout:", io._opts.pingTimeout)
+				// 	console.log("pingInterval:", io._opts.pingInterval)
+				// 	console.log("upgradeTimeout:", io._opts.upgradeTimeout)
+				// 	console.log("maxHttpBufferSize:", io._opts.maxHttpBufferSize)
+				// 	console.log("cors:", io._opts.cors)
+			});
+
+			socket.on("getRoomMessage", async (roomId: string, userId: number) => {
+				try {
+					const messages = await messageService.getRoomMessages(roomId);
+					socket.emit("roomMessages", { roomId, messages });
+				} catch (error) {
+					console.error(`Failed to fetch messages for room ${roomId}:`, error);
+					socket.emit("error", { message: "Failed to fetch room messages" });
 				}
 			});
 
-			console.log("ジョインソケットID:", socket.id);
-			socket.join(roomId);
-			console.log(`User joined room ${roomId}`);
-		});
+			socket.on(
+				"newMessage",
+				async (message: {
+					roomId: string;
+					senderId: number;
+					content: string;
+				}) => {
+					if (socket.connected) {
+						// socket.to(message.roomId).emit("newMessage", message);
+						try {
+							// const resmessage = await messageService.sendMessage(
+							// 	message.roomId,
+							// 	message.senderId,
+							// 	message.content,
+							// )
 
-		socket.on("getRoomMessage", async (roomId: string, userId: number) => {
-			try {
-				const messages = await messageService.getRoomMessages(roomId);
-				socket.emit("roomMessages", { roomId, messages });
-			} catch (error) {
-				console.error(`Failed to fetch messages for room ${roomId}:`, error);
-				socket.emit("error", { message: "Failed to fetch room messages" });
-			}
-		});
+							const messages = await messageService.getRoomMessages(
+								message.roomId,
+							);
+							// const roomSockets = io.sockets.adapter.rooms.get(message.roomId);
+							// if (roomSockets) {
+							// 	roomSockets.forEach((socketId) => {
+							// 		const socket = io.sockets.sockets.get(socketId);
+							// 		socket.emit("roomMessages", {
+							// 			roomId: message.roomId,
+							// 			messages,
+							// 		});
+							// 	});
+							// }
+							// console.log(socket)
+							// console.log(io)
+							const room = socket.to(message.roomId);
+							socket.to(message.roomId).emit("roomMessages", (response) => {
+								console.log("クライアントからのack:", response);
+							});
+							socket.emit("roomMessages", {
+								roomId: message.roomId,
+								messages,
+							});
+							// const res = io.to(room).emit("roomMessages", {
+							// 	roomId: message.roomId,
+							// 	messages,
+							// });
+							const namespace = io.of("/");
+							const sockets = await namespace.fetchSockets();
 
-		socket.on(
-			"newMessage",
-			async (message: {
-				roomId: string;
-				senderId: number;
-				content: string;
-			}) => {
-				if (socket.connected) {
-					// socket.to(message.roomId).emit("newMessage", message);
-					try {
-						// const resmessage = await messageService.sendMessage(
-						// 	message.roomId,
-						// 	message.senderId,
-						// 	message.content,
-						// );
-						// const messages = await messageService.getRoomMessages(
-						// 	message.roomId,
-						// );
-						// const roomSockets = io.sockets.adapter.rooms.get(message.roomId);
-						// if (roomSockets) {
-						// 	roomSockets.forEach((socketId) => {
-						// 		const socket = io.sockets.sockets.get(socketId);
-						// 		socket.emit("roomMessages", {
-						// 			roomId: message.roomId,
-						// 			messages,
-						// 		});
-						// 	});
-						// }
-
-						const namespace = io.of("/");
-						const sockets = await namespace.fetchSockets();
-
-						for (const socket of sockets) {
-							if (socket.rooms.has(message.roomId)) {
-								console.log("ソケットID:", socket.id);
-								console.log("ルーム所属:", socket.rooms);
-								console.log(
-									"ルームチェック:",
-									socket.rooms.has(message.roomId),
-								);
-								console.log("接続状態:", socket.connected);
-								socket.emit("roomMessages", { roomId: message.roomId });
+							for (const socketer of sockets) {
+								if (socketer.rooms.has(message.roomId)) {
+									console.log("ソケットID:", socketer.id);
+									console.log("ルーム所属:", socketer.rooms);
+									console.log(
+										"ルームチェック:",
+										socketer.rooms.has(message.roomId),
+									);
+									socketer.emit("roomMessages", {
+										roomId: message.roomId,
+										messages,
+									});
+									// console.log("socket", socket);
+									// console.log("socketer", socketer);
+								}
 							}
+						} catch (error) {
+							console.error(error);
 						}
-						// const recipientSockets = io.adapter.sockets(new Set([message.roomId]));
-						// for (const socketId of recipientSockets) {
-						// 	io.to(socketId).emit("message", {
-						// 		roomId: message.roomId,
-						//   	messages,
-						// 	 });
-						// }
-						// socket.except(message.roomId).emit("roomMessages", {
-						// 	roomId: message.roomId,
-						// 	messages,
-						// });
-					} catch (error) {
-						console.error(error);
+					} else {
+						console.log("Socket is disconnected");
 					}
-				} else {
-					console.log("Socket is disconnected");
-				}
-			},
-		);
-
-		socket.on("disconnect", () => {
-			console.log("User disconnected");
-		});
-	});
-
-	nitroApp.router.use(
-		"/socket.io/",
-		defineEventHandler({
-			handler(event) {
-				const parsedUrl = parse(event.node.req.url || "", true);
-
-				const queryParams: Record<string, string> = Object.fromEntries(
-					Object.entries(parsedUrl.query || {}).map(([key, value]) => [
-						key,
-						Array.isArray(value) ? value[0] : (value || "").toString(),
-					]),
-				);
-
-				const engineReq = Object.assign(event.node.req, {
-					_query: queryParams,
-				});
-
-				engine.handleRequest(engineReq, event.node.res);
-				event._handled = true;
-			},
-			websocket: {
-				open(peer) {
-					// @ts-expect-error private method and property
-					engine.prepare(peer._internal.nodeReq);
-					// console.log("peer");
-					// console.log(peer._internal);
-					// @ts-expect-error private method and property
-					engine.onWebSocket(
-						// @ts-expect-error private method and property
-						peer._internal.nodeReq,
-						// @ts-expect-error private method and property
-						peer._internal.nodeReq.socket,
-						peer.websocket,
-					);
 				},
-			},
-		}),
-	);
+			);
+
+			socket.on("disconnect", () => {
+				console.log("User disconnected");
+			});
+			// if (import.meta.dev) {
+			//   server.listen(3001, () => {
+			//     console.log("Socket.IO server listening on http://localhost:3001");
+			//   });
+			// }
+		});
+	}
+
+	// nitroApp.router.use(
+	// 	"/socket.io/",
+	// 	defineEventHandler({
+	// 		handler(event) {
+	// 			const parsedUrl = parse(event.node.req.url || "", true);
+
+	// 			const queryParams: Record<string, string> = Object.fromEntries(
+	// 				Object.entries(parsedUrl.query || {}).map(([key, value]) => [
+	// 					key,
+	// 					Array.isArray(value) ? value[0] : (value || "").toString(),
+	// 				]),
+	// 			);
+
+	// 			const engineReq = Object.assign(event.node.req, {
+	// 				_query: queryParams,
+	// 			});
+
+	// 			engine.handleRequest(engineReq, event.node.res);
+	// 			event._handled = true;
+	// 		},
+	// 		websocket: {
+	// 			open(peer) {
+	// 				// @ts-expect-error private method and property
+	// 				engine.prepare(peer._internal.nodeReq);
+	// 				// console.log("peer");
+	// 				// console.log(peer._internal);
+	// 				// @ts-expect-error private method and property
+	// 				engine.onWebSocket(
+	// 					// @ts-expect-error private method and property
+	// 					peer._internal.nodeReq,
+	// 					// @ts-expect-error private method and property
+	// 					peer._internal.nodeReq.socket,
+	// 					peer.websocket,
+	// 				);
+	// 			},
+	// 		},
+	// 	}),
+	// );
 
 	// nitroApp.router.use("/socket.io/", defineEventHandler({
 	//   handler(event) {
