@@ -2,6 +2,7 @@ import { toNodeListener } from "h3";
 // import { defineNitroPlugin } from "nitropack/dist/runtime/plugin";
 import { createServer } from "node:http";
 // import { Server } from "socket.io";
+const httpServer = createServer();
 
 // export default defineNitroPlugin(async (nitroApp) => {
 // 	console.log("Nitro App Server02:");
@@ -61,7 +62,7 @@ export default defineNitroPlugin((nitroApp) => {
 		globalThis.io = new Server(server, {
 			path: "/socket.io",
 			cors: {
-				origin: "*",
+				origin: "http://localhost:3000",
 				methods: ["GET", "POST"],
 				credentials: true,
 			},
@@ -78,6 +79,27 @@ export default defineNitroPlugin((nitroApp) => {
 
 		const io = globalThis.io;
 
+		const originalTo = io.to.bind(io);
+		io.to = function (...args: any[]) {
+			const roomId = args[0];
+			const roomSockets = io.sockets.adapter.rooms.get(roomId);
+			if (!roomSockets || roomSockets.size === 0) {
+				console.warn(`[io.to OVERRIDE] Room ${roomId} is empty or does not exist.`);
+			} else {
+				console.log(`[io.to OVERRIDE] Room ${roomId} has ${roomSockets.size} members.`);
+			}
+
+			const operator = originalTo(...args);
+
+			const originalEmit = operator.emit.bind(operator);
+			operator.emit = function (event: any, ...payload: any[]) {
+				console.log(`[io.to.emit OVERRIDE] Emitting to room ${roomId}:`, { event, payload });
+				return originalEmit(event, ...payload);
+			};
+
+			return operator;
+		};
+
 		io.on("connection", (socket) => {
 			console.log("A user connected");
 			const originalOn = socket.onevent;
@@ -85,6 +107,7 @@ export default defineNitroPlugin((nitroApp) => {
 				console.log("Received event:", packet.data[0], packet.data.slice(1));
 				originalOn.call(this, packet);
 			};
+			console.log("A user connected:", socket.id);
 
 			function logRoomsAndSockets() {
 				const adapter = io.of("/").adapter;
@@ -128,7 +151,14 @@ export default defineNitroPlugin((nitroApp) => {
 				// 	}
 				// });
 				// socket.join('test-room');
-				socket.join(roomId);
+				// const currentRooms = Array.from(socket.rooms);
+				// currentRooms.forEach((room) => {
+				// 	if (room !== socket.id) {
+				// 		socket.leave(room);
+				// 	}
+				// });
+				await socket.join(roomId)
+
 				// logRoomsAndSockets();
 				// ルームが存在するか確認
 				// console.log("Test room exists:", io.of('/').adapter.rooms.has('test-room'));
@@ -144,6 +174,8 @@ export default defineNitroPlugin((nitroApp) => {
 				// 	console.log("upgradeTimeout:", io._opts.upgradeTimeout)
 				// 	console.log("maxHttpBufferSize:", io._opts.maxHttpBufferSize)
 				// 	console.log("cors:", io._opts.cors)
+				const roomSockets = io.sockets.adapter.rooms.get(roomId);
+				console.log(`Room ${roomId} has ${roomSockets?.size || 0} sockets`);
 			});
 
 			socket.on("getRoomMessage", async (roomId: string, userId: number) => {
@@ -171,64 +203,56 @@ export default defineNitroPlugin((nitroApp) => {
 							// 	message.senderId,
 							// 	message.content,
 							// )
+              const namespace = io.of("/");
+              const sockets = await namespace.fetchSockets();
 
-							const messages = await messageService.getRoomMessages(
-								message.roomId,
-							);
-							// const roomSockets = io.sockets.adapter.rooms.get(message.roomId);
-							// if (roomSockets) {
-							// 	roomSockets.forEach((socketId) => {
-							// 		const socket = io.sockets.sockets.get(socketId);
-							// 		socket.emit("roomMessages", {
-							// 			roomId: message.roomId,
-							// 			messages,
-							// 		});
-							// 	});
-							// }
-							// console.log(socket)
-							// console.log(io)
-							const room = socket.to(message.roomId);
-							socket.to(message.roomId).emit("roomMessages", (response) => {
-								console.log("クライアントからのack:", response);
-							});
-							socket.emit("roomMessages", {
-								roomId: message.roomId,
-								messages,
-							});
-							// const res = io.to(room).emit("roomMessages", {
-							// 	roomId: message.roomId,
-							// 	messages,
-							// });
-							const namespace = io.of("/");
-							const sockets = await namespace.fetchSockets();
-
-							for (const socketer of sockets) {
-								if (socketer.rooms.has(message.roomId)) {
-									console.log("ソケットID:", socketer.id);
-									console.log("ルーム所属:", socketer.rooms);
-									console.log(
-										"ルームチェック:",
-										socketer.rooms.has(message.roomId),
-									);
-									socketer.emit("roomMessages", {
-										roomId: message.roomId,
-										messages,
-									});
-									// console.log("socket", socket);
-									// console.log("socketer", socketer);
+								for (const socketer of sockets) {
+									if (socketer.rooms.has(message.roomId)) {
+										console.log("ソケットID:", socketer.id);
+										console.log("ルーム所属:", socketer.rooms);
+										console.log(
+											"ルームチェック:",
+											socketer.rooms.has(message.roomId),
+										);
+										// console.log("socket", socket);
+										// console.log("socketer", socketer);
+									}
 								}
-							}
-						} catch (error) {
-							console.error(error);
-						}
-					} else {
-						console.log("Socket is disconnected");
-					}
-				},
-			);
 
+								const messages = await messageService.getRoomMessages(
+									message.roomId,
+								);
+
+								// ルーム内の全ソケットにメッセージを送信
+								// io.to(message.roomId).emit("roomMessages", {
+								// 	roomId: message.roomId,
+								// 	messages,
+								// });
+
+								await socket.join(message.roomId)
+								console.log(`Message sent to room ${message.roomId}`)
+								// デバッグ用：ルーム内のソケット情報を確認
+								const roomSockets = io.sockets.adapter.rooms.get(message.roomId);
+								if (roomSockets) {
+									console.log(`Room ${message.roomId} sockets:`, Array.from(roomSockets));
+								}
+								setTimeout(() => {
+									io.to(message.roomId).emit("roomMessages", { roomId: message.roomId, messages });
+								}, 50);
+								// io.emit("roomMessages", {
+								// 	roomId: message.roomId,
+								// 	messages,
+								// });
+							} catch (error) {
+								console.error("Error sending message:", error);
+								socket.emit("error", { message: "Failed to send message" });
+							}
+						} else {
+							console.log("Socket is disconnected");
+						}
+				})
 			socket.on("disconnect", () => {
-				console.log("User disconnected");
+				console.log("User disconnected:", socket.id);
 			});
 			// if (import.meta.dev) {
 			//   server.listen(3001, () => {
