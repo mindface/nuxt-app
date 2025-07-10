@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { ref } from "vue";
 import { headerOnlyBearer } from "../utils/headers-helper";
 
 // connectIdがtaskのIDを利用

@@ -1,3 +1,5 @@
+import { useFetch, useRuntimeConfig } from "nuxt/app";
+
 export const getApiKey = () => {
 	const config = useRuntimeConfig();
 	return config.app.apiKey;

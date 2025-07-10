@@ -26,6 +26,10 @@ const pathList = [
 		pathName: "task",
 	},
 	{
+		path: "/chat",
+		pathName: "chat",
+	},
+	{
 		path: "/taskEvaluation",
 		pathName: "taskEvaluation",
 	},

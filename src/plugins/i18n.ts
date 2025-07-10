@@ -1,5 +1,5 @@
+import { defineNuxtPlugin } from "nuxt/app";
 import { createI18n } from "vue-i18n";
-import { defineNuxtPlugin } from "#app";
 
 import en from "../../locales/en.json";
 import ja from "../../locales/ja.json";

@@ -28,8 +28,9 @@ export default defineEventHandler(async (event) => {
 
 		if (method === "POST") {
 			const body = await readBody(event);
-			if (!body.userId)
+			if (!body.userId) {
 				return { status: 400, message: "TaskEvaluation ID is required" };
+			}
 
 			const newTask = await TaskEvaluationsService.createTaskEvaluation(body);
 			return { status: 201, taskEvaluation: newTask };

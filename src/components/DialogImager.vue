@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useNuxtApp } from "nuxt/app";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useAuthStore } from "../store/auth";
 import { useImagerStore } from "../store/imager";
 import Dialog from "./parts/Dialog.vue";

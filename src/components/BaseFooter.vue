@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "../store/auth";
+import DialogImager from "./DialogImager.vue";
 const authStore = useAuthStore();
 const { authUser } = storeToRefs(authStore);
-import DialogImager from "./DialogImager.vue";
 </script>
 
 <template>

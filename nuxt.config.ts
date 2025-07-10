@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from 'nuxt/config'
+import { defineNuxtConfig } from "nuxt/config"
 
 export default defineNuxtConfig({
   runtimeConfig: {
@@ -7,16 +7,38 @@ export default defineNuxtConfig({
       localUrl: process.env.LOCAL_URL
     }
   },
+  // io: {
+  //   sockets: [{
+  //     name: "main",
+  //     url: "http://localhost:3000"
+  //   }]
+  // },
+  nitro: {
+    experimental: {
+      websocket: true
+    },
+    routeRules: {
+      "/socket.io/**": {
+        proxy: "http://localhost:3001"
+      },
+    },
+    devProxy: {
+      "/socket.io/": {
+        target: "http://localhost:3001",
+        ws: true,
+      },
+    },
+  },
   experimental: {
     viewTransition: true
   },
-  // devtools: { enabled: true },
-  srcDir: 'src/',
+  devtools: { enabled: true },
+  srcDir: "src/",
 
   modules: [
-    '@pinia/nuxt',
-    '@nuxt/image',
-    // '@nuxtjs/i18n',
+    "@pinia/nuxt",
+    "@nuxt/image",
+    // "@nuxtjs/i18n",
   ],
 
   build: {
@@ -42,7 +64,7 @@ export default defineNuxtConfig({
 
   vue: {
     compilerOptions: {
-      isCustomElement: tag => tag.startsWith('custom-')
+      isCustomElement: tag => tag.startsWith("custom-")
     }
   },
 
@@ -54,5 +76,5 @@ export default defineNuxtConfig({
     ],
   },
 
-  compatibilityDate: '2025-02-06',
+  compatibilityDate: "2025-02-06",
 })

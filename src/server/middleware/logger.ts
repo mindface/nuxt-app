@@ -3,6 +3,7 @@ import {
 	getRequestHeaders,
 	getRequestURL,
 	H3Event,
+	readBody,
 } from "h3";
 import { logger } from "../../lib/logger";
 

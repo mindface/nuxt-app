@@ -1,9 +1,14 @@
-import { useAuth } from "../utils/auth";
-import prisma from "../utils/prisma";
-import { defineEventHandler, readMultipartFormData } from "h3";
-import { promises as fs, existsSync, mkdirSync, readdirSync } from "fs";
+import { existsSync, promises as fs } from "fs";
+import {
+	defineEventHandler,
+	getQuery,
+	readBody,
+	readMultipartFormData,
+} from "h3";
 import path from "path";
 import ImagerService from "../services/imagerService";
+import { useAuth } from "../utils/auth";
+import prisma from "../utils/prisma";
 
 export default defineEventHandler(async (event) => {
 	await useAuth(event);

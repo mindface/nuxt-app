@@ -1,19 +1,25 @@
 import { defineStore } from "pinia";
-import type { RoomResponse } from "~/types/ApiRespose";
-import type { AddRoom, Room } from "../types/Room";
+import { ref } from "vue";
+import type { RoomResponse } from "../types/ApiRespose";
+import type { UserRoom } from "../types/Room";
+import { headerOnlyBearer, headersTypeJson } from "../utils/headers-helper";
+import { getSocket } from "../utils/socket.client";
 
-export const roomStore = defineStore("room", () => {
-	const roomList = ref<Room[]>([]);
-	const headers = {
-		"Content-Type": "application/json",
-		Authorization: `Bearer ${useCookie("auth_token").value}`,
+export const useRoomStore = defineStore("room", () => {
+	const roomList = ref<UserRoom[]>([]);
+	const currentRoom = ref<UserRoom>();
+	const socketIO = getSocket();
+
+	const setRoom = (setItem: UserRoom) => {
+		currentRoom.value = setItem;
+		socketIO.emit("joinRoom", setItem.roomId);
 	};
 
 	async function getRoomList(userId: number) {
 		try {
 			const data = (await $fetch(`/api/room?userId=${userId}`, {
 				method: "GET",
-				headers: headers,
+				headers: headersTypeJson(),
 			})) as RoomResponse;
 			if (data) {
 				roomList.value = data.rooms ?? [];
@@ -22,21 +28,23 @@ export const roomStore = defineStore("room", () => {
 			console.error(error);
 		}
 	}
-	async function createTask(addItem: AddRoom) {
+	async function createRoom(formData: FormData) {
 		try {
-			const data = (await $fetch("/api/room", {
-				method: "PUT",
-				headers: headers,
-				body: JSON.stringify(addItem),
-			})) as RoomResponse;
+			const data = await $fetch("/api/room", {
+				method: "POST",
+				headers: headerOnlyBearer(),
+				body: formData,
+			});
 		} catch (error) {
 			console.error(`error`, error);
 		}
 	}
 
 	return {
+		currentRoom,
 		roomList,
+		setRoom,
 		getRoomList,
-		createTask,
+		createRoom,
 	};
 });

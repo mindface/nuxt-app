@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
+import { navigateTo, useCookie } from "nuxt/app";
 import { defineStore } from "pinia";
+import { ref } from "vue";
 import type { UserResponse } from "../types/ApiRespose";
 import type { AddUser, User } from "../types/User";
 

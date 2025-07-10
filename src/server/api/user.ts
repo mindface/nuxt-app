@@ -1,9 +1,9 @@
 import { defineEventHandler, getQuery, readBody } from "h3";
 import {
-	getUserById,
 	createUser,
-	updateUser,
 	deleteUser,
+	getUserById,
+	updateUser,
 } from "../services/userService";
 import { useAuth } from "../utils/auth";
 
@@ -46,9 +46,9 @@ export default defineEventHandler(async (event) => {
 
 		if (method === "PUT") {
 			const body = await readBody(event);
-			if (!body.id)
+			if (!body.id) {
 				return { status: 400, message: "User ID is required for update" };
-
+			}
 			const updatedUser = await updateUser(body.id, body);
 
 			return { status: 200, user: updatedUser };

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useAuthStore } from "../store/auth";
-import Dialog from "./parts/Dialog.vue";
 const { $toast, $t } = useNuxtApp();
 const authStore = useAuthStore();
 const userLoginSwitch = ref(false);

@@ -1,4 +1,6 @@
+import { useCookie, useFetch } from "nuxt/app";
 import { defineStore } from "pinia";
+import { ref } from "vue";
 import type { TaskEvaluationResponse } from "../types/ApiRespose";
 import type {
 	AddTaskEvaluation,
