@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from "vue";
-import { socket } from "../utils/socket";
+import { socket } from "../composables/useSocket";
 
 const isConnected = ref(false);
 const transport = ref("N/A");

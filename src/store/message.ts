@@ -3,19 +3,14 @@ import { io } from "socket.io-client";
 import { ref } from "vue";
 import type { Message } from "../types/Message";
 import { useRoomStore } from "./room";
+import { getSocket } from "../utils/socket.client";
 
 export const useMessageStore = defineStore("message", () => {
 	const roomStore = useRoomStore();
 	const { currentRoom } = storeToRefs(roomStore);
 	const messageList = ref<Message[]>([]);
 	const socket = ref<any>(null);
-	const socketIO = io("http://localhost:3001", {
-		path: "/socket.io",
-		transports: ["websocket", "polling"],
-		reconnection: true,
-		reconnectionAttempts: 5,
-		reconnectionDelay: 1000,
-	});
+	const socketIO = getSocket();
 
 	socketIO.on("connect", () => {
 		socketIO.emit("joinRoom", currentRoom.value?.roomId);

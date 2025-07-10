@@ -7,6 +7,8 @@ import { useChatSocketStore } from "../store/chatSocket";
 import { useMessageStore } from "../store/message";
 import { useRoomStore } from "../store/room";
 
+import SocketComponent from "./socket-component.vue";
+
 const { $toast, $t } = useNuxtApp();
 
 const messageStore = useMessageStore();
@@ -94,5 +96,6 @@ const action = () => {
         <p class="p-3">{{ item.content ?? "no content" }}</p>
       </li>
     </ul>
+		<SocketComponent />
 </div>
 </template>

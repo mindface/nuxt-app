@@ -4,17 +4,12 @@ import { ref } from "vue";
 import type { RoomResponse } from "../types/ApiRespose";
 import type { UserRoom } from "../types/Room";
 import { headerOnlyBearer, headersTypeJson } from "../utils/headers-helper";
+import { getSocket } from "../utils/socket.client";
 
 export const useRoomStore = defineStore("room", () => {
 	const roomList = ref<UserRoom[]>([]);
 	const currentRoom = ref<UserRoom>();
-	const socketIO = io("http://localhost:3001", {
-		path: "/socket.io",
-		transports: ["websocket", "polling"],
-		reconnection: true,
-		reconnectionAttempts: 5,
-		reconnectionDelay: 1000,
-	});
+	const socketIO = getSocket();
 
 	const setRoom = (setItem: UserRoom) => {
 		currentRoom.value = setItem;
