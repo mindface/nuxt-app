@@ -54,8 +54,8 @@ const pathList = [
 		pathName: "watchItem",
 	},
 	{
-		path: "/do",
-		pathName: "do",
+		path: "/pdf",
+		pathName: "pdf",
 	},
 	{
 		path: "/user",

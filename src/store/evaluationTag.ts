@@ -10,10 +10,10 @@ export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 
 	async function getEvaluationTagList() {
 		try {
-			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
+			const data = (await $fetch("/api/evaluationTag", {
 				method: "GET",
 				headers: headersTypeJson(),
-			});
+			})) as EvaluationTagResponse;
 			if (data) {
 				tagList.value = data.tags ?? [];
 			}
@@ -23,22 +23,22 @@ export const useEvaluationTagStore = defineStore("EvaluationTag", () => {
 	}
 	async function addEvaluationTag(addEvaluationTag: AddEvaluationTag) {
 		try {
-			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
+			const data = (await $fetch("/api/evaluationTag", {
 				method: "POST",
 				headers: headersTypeJson(),
 				body: JSON.stringify(addEvaluationTag),
-			});
+			})) as EvaluationTagResponse;
 		} catch (error) {
 			console.error(`error`, error);
 		}
 	}
 	async function updateEvaluationTag(tagItem: EvaluationTag) {
 		try {
-			const data = await $fetch<EvaluationTagResponse>("/api/evaluationTag", {
+			const data = (await $fetch("/api/evaluationTag", {
 				method: "PUT",
 				headers: headersTypeJson(),
 				body: JSON.stringify(tagItem),
-			});
+			})) as EvaluationTagResponse;
 		} catch (error) {
 			console.error("error", error);
 		}

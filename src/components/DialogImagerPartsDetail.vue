@@ -20,6 +20,8 @@ const props = defineProps({
 	},
 });
 
+const { localUrl } = useRuntimeConfig().app;
+
 const imagerStore = useImagerStore();
 
 const fromSwicher = ref(false);
@@ -44,6 +46,17 @@ const imageSwicherAction = () => {
 	if (fromSwicher.value) {
 		setDataAction();
 	}
+};
+
+const downLoadActtion = (url: string) => {
+	const path = url.split("/");
+	const fileName = path[path.length - 1];
+	const a = document.createElement("a");
+	document.body.appendChild(a);
+	a.download = fileName;
+	a.href = url;
+	a.click();
+	a.remove();
 };
 
 const updateImage = async (e: Event) => {
@@ -73,7 +86,8 @@ const updateImage = async (e: Event) => {
 <template>
   <div>
 			<div class="dialog-imager-parts-detail relative">
-        <button @click="imageSwicherAction()">{{ $t("detail") }}</button>
+        <button class="p-2 border" @click="imageSwicherAction()">{{ $t("detail") }}</button>
+        <button class="p-2 border" @click="downLoadActtion(`${localUrl}${props.item?.path}`)">{{ $t("imageDownload") }}</button>
         <Transition name="fade">
           <div
             v-if="fromSwicher"

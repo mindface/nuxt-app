@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { headerOnlyBearer } from "../utils/headers-helper";
 
 // connectIdがtaskのIDを利用
 export interface TaskConnect {
@@ -46,7 +47,7 @@ export const useTaskConnectStore = defineStore("taskConnect", () => {
 		try {
 			const res = await fetch("http://localhost:3003/taskConnect/postActions", {
 				method: "POST",
-				headers: headers,
+				headers: headerOnlyBearer(),
 				body: JSON.stringify(addItem),
 			});
 			const result = await res.json();
@@ -64,7 +65,7 @@ export const useTaskConnectStore = defineStore("taskConnect", () => {
 				"http://localhost:3003/taskConnect/taskIssueActions",
 				{
 					method: "POST",
-					headers: headers,
+					headers: headerOnlyBearer(),
 					body: JSON.stringify(addItem),
 				},
 			);
@@ -81,7 +82,7 @@ export const useTaskConnectStore = defineStore("taskConnect", () => {
 		try {
 			const res = await fetch("http://localhost:3003/taskConnect/postActions", {
 				method: "POST",
-				headers: headers,
+				headers: headerOnlyBearer(),
 				body: JSON.stringify(addItem),
 			});
 			const result = await res.json();
@@ -97,7 +98,7 @@ export const useTaskConnectStore = defineStore("taskConnect", () => {
 		try {
 			const res = await fetch("http://localhost:3003/taskConnect/postActions", {
 				method: "POST",
-				headers: headers,
+				headers: headerOnlyBearer(),
 				body: JSON.stringify(addItem),
 			});
 			const result = await res.json();

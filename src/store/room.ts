@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { io } from "socket.io-client";
 import { ref } from "vue";
 import type { RoomResponse } from "../types/ApiRespose";
 import type { UserRoom } from "../types/Room";

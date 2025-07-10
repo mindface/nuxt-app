@@ -7,6 +7,7 @@ import { useImagerStore } from "../store/imager";
 import Dialog from "./parts/Dialog.vue";
 // import DialogImagerPartsDetail from "./DialogImagerPartsDetail.vue";
 
+const { localUrl } = useRuntimeConfig().app;
 const { $toast, $t } = useNuxtApp();
 
 const imagerStore = useImagerStore();
@@ -67,7 +68,9 @@ onMounted(() => {
 		  :label="$t('imageList')"
 		>
 			<div class="image-uploader h-[80vh]">
-				<button class="btn" @click="imageSwicherAction">{{ imageSwicher ? $t('imageList'):$t('imageUpload') }}</button>
+        <p class="p-4">
+          <button class="btn p-2 border" @click="imageSwicherAction">{{ imageSwicher ? $t('imageList'):$t('imageUpload') }}</button>
+        </p>
 				<div
           v-if="imageSwicher"
           class="image-uploader__upload-area"
@@ -107,7 +110,7 @@ onMounted(() => {
           >
             <div class="image-box__inner">
               <nuxt-img
-                :src="`http://localhost:3000${item.path}`"
+                :src="`${localUrl}${item.path}`"
                 width="220"
                 height="120"
                 quality="70"

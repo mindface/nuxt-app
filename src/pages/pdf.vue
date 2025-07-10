@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ContentDo from "../components/ContentDo.vue";
+import ContentPDF from "../components/ContentPDF2.vue";
 </script>
 
 <template>
   <div class="do">
-    <content-do />
+    <ContentPDF />
   </div>
 </template>

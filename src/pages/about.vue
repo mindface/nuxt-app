@@ -4,6 +4,6 @@ import ContentAbout from "../components/ContentAbout.vue";
 
 <template>
   <div class="about">
-               <content-about />
+    <content-about />
   </div>
 </template>
